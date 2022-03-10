@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -9,11 +12,15 @@ from .utils import *
 
 class Vocus(object):
     """
-    Vocus is a class for wrangling Vocus PTR-TOF-MS data
-    :param data: hdf5 filepath or list of hdf5 filepaths
-    :type data: str
+    Vocus is a class for wrangling Vocus PTR-TOF-MS data, and generating
+    labeled time-series datasets that are useful for analyzing data, 
+    visualizing data, building machine learning models, and more.
+
+    :param data: hdf5 filepath (or list of hdf5 filepaths)
+    :type data: str (or list of str)
     """
     def __init__(self, data, **kwargs):
+        # load in Vocus data
         if type(data) is list:
             for i,d in enumerate(data):
                 if i == 0:
@@ -26,16 +33,23 @@ class Vocus(object):
         else:
             self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data = self.load_data(data)
 
-        self.path_to_mass_list = kwargs.pop('path_to_mass_list', 'config/mass_list.yml')
-        self.path_to_voc_db = kwargs.pop('path_to_voc_db', 'config/voc_db.yml')
+        # YAML configuration files contain information for computing time series and functional groups
+        self.path_to_mass_list = kwargs.pop('path_to_mass_list', 'vocus/config/mass_list.yml')
+        self.path_to_voc_db = kwargs.pop('path_to_voc_db', 'vocus/config/voc_db.yml')
 
         self.voc_dict = read_yaml(self.path_to_voc_db)['compounds']
-        self.groups = read_yaml('config/grouping.yml')['chosen-groups']
+        self.possible_groups = read_yaml('vocus/config/grouping.yml')['possible-groups']
+        self.groups = read_yaml('vocus/config/grouping.yml')['chosen-groups']
 
         return
 
     ## methods for wrangling hdf5 file data and compiling into some properties
     def load_data(self, data):
+        """
+        extracts useful data from Vocus hdf5 file.
+        :param data: hdf5 filepath
+        :type data: str
+        """
         with h5py.File(data, "r") as f:
             timestamps = self.get_times(f)
             mass_axis = self.get_mass_axis(f)
@@ -46,16 +60,20 @@ class Vocus(object):
 
     def get_times(self, f):
         """
-        returns array of timestamps that match up with ToF data
+        extracts array of timestamps that match up with ToF data from Vocus file
         """
-        # get experiment start time from log file and 
+        # get experiment start time from log file and transforms string to datetime
         start_time = f['AcquisitionLog']['Log']['timestring'][0]
         start_time = datetime.strptime(start_time.decode('UTF-8'), "%Y-%m-%dT%H:%M:%S+00:00")
 
+        # times of observation are recorded as second offsets from start time
         buftimes = np.array(f['TimingData']['BufTimes'])
         
         timestamps = np.array([start_time + timedelta(seconds=i) for i in buftimes.reshape(-1)])
         
+        # when the Vocus stops recording measurements, it still finishes out its last five second interval,
+        # and records the time of the empty measurements as the start time. This code sets the empty measurement
+        # times to NaN
         mask = (timestamps == timestamps[0])
         mask[0] = False
 
@@ -65,7 +83,7 @@ class Vocus(object):
     
     def get_tof_data(self, f, t, n):
         """
-        returns array of ToF data of shape (t, n) where
+        extracts array of ToF data of shape (t, n) where
         t = number of snapshots that were taken during the experiment, or in other words the number of 
         timesteps (typically seconds) that the experiment was running
         n = number of mass bins that the mass spec is equipped to observe
@@ -91,9 +109,11 @@ class Vocus(object):
     ## methods for munging and analyzing mass spec data by modifying object properties
     def get_time_series(self, mass, **kwargs):
         """
-        compute the abundance of a certain m/Q value vs time
+        Compute the abundance of a certain m/Q value vs time. If input is a single mass (m/Q) value,
+        the bin for integration is assumed to have a width of 1. Otherwise, mass should be passed as a tuple
+        of the form (mass_lower, mass_upper), and mass_range should be specified as True.
         """
-        binsize = kwargs.pop('binsize', 1)
+        binsize = 1
         mass_range = kwargs.pop('mass_range', False)
 
         if mass_range == False:
@@ -108,11 +128,10 @@ class Vocus(object):
         return tof_time_series
         
     def get_time_series_df(self, masses, **kwargs):
-        binsize = kwargs.pop('binsize', 1)
         mass_range = kwargs.pop('mass_range', False)
         names = kwargs.pop('names', None)
 
-        time_series_masses = [self.get_time_series(m, binsize=binsize, mass_range=mass_range) for m in masses]
+        time_series_masses = [self.get_time_series(m, mass_range=mass_range) for m in masses]
         time_series_masses.insert(0, self.timestamps)
 
         if names == None:
@@ -141,11 +160,16 @@ class Vocus(object):
 
         return self.time_series_df
 
-    def group_time_series_df(self):
+    def group_time_series_df(self, **kwargs):
         """
-        based on the groups that the user specifies in the config/grouping.yml file,
+        based on the groups that the user specifies, or by default listed in the config/grouping.yml file,
         sum the time series dataframe to have those groups as columns
         """
+        #if user inputs a list of groups
+        groups = kwargs.pop('groups', self.groups)
+        if set(groups).issubset(self.possible_groups):
+            self.groups = groups
+
         groups_smiles_dict = {}
         for f in self.groups:
             groups_smiles_dict[f] = {'smiles': [],}
