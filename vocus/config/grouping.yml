@@ -1,0 +1,11 @@
+possible-groups: ['hydroxyl', 'carbonyl', 'carboxyl', 'amine', 'phosphorus', 'sulfur', 'alcohol', 'ether', 'ketone', 'halide', 'ester',
+                             'amide', 'aldehyde', 'aromatic', 'amino_acid', 'nitrate', 'BTEX', 'BTEXS']
+
+chosen-groups:
+  - carboxyl
+  - amine
+  - alcohol
+  - ketone
+  - ester
+  - aldehyde
+  - aromatic
