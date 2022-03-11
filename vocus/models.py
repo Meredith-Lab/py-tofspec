@@ -173,11 +173,13 @@ class Vocus(object):
         #if user inputs a list of groups
         groups = kwargs.pop('groups', self.groups)
         if set(groups).issubset(self.possible_groups):
-            self.groups = groups
+            pass
+        else:
+            groups = self.groups
 
         #get all of the compounds SMILES for each group
         groups_smiles_dict = {}
-        for f in self.groups:
+        for f in groups:
             groups_smiles_dict[f] = {'smiles': [],}
             for compound in self.voc_dict:
                 if f in compound['groups']:
