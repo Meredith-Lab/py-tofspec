@@ -17,7 +17,7 @@ class Vocus(object):
     visualizing data, building machine learning models, and more.
 
     :param data: hdf5 filepath (or list of hdf5 filepaths)
-    :type data: str (or list of str)
+    :type data: str or list[str]
     """
     def __init__(self, data, **kwargs):
         # load in Vocus data
@@ -62,7 +62,7 @@ class Vocus(object):
         """
         extracts array of timestamps that match up with ToF data from Vocus file
         """
-        # get experiment start time from log file and transforms string to datetime
+        # get experiment start time from log file and transform string to datetime
         start_time = f['AcquisitionLog']['Log']['timestring'][0]
         start_time = datetime.strptime(start_time.decode('UTF-8'), "%Y-%m-%dT%H:%M:%S+00:00")
 
@@ -128,6 +128,11 @@ class Vocus(object):
         return tof_time_series
         
     def get_time_series_df(self, masses, **kwargs):
+        """
+        Using a list of masses or mass range tuples, create a time series 
+        dataframe with a column for every compound in the list. Specify column names with optional
+        input names.
+        """
         mass_range = kwargs.pop('mass_range', False)
         names = kwargs.pop('names', None)
 
@@ -170,6 +175,7 @@ class Vocus(object):
         if set(groups).issubset(self.possible_groups):
             self.groups = groups
 
+        #get all of the compounds SMILES for each group
         groups_smiles_dict = {}
         for f in self.groups:
             groups_smiles_dict[f] = {'smiles': [],}
@@ -177,6 +183,7 @@ class Vocus(object):
                 if f in compound['groups']:
                     groups_smiles_dict[f]['smiles'].append(compound['smiles'])
 
+        #build grouped dataframe
         self.grouped_df = pd.DataFrame()
         self.grouped_df.index = self.time_series_df.index
 
