@@ -24,14 +24,15 @@ class Vocus(object):
         if type(data) is list:
             for i,d in enumerate(data):
                 if i == 0:
-                    self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data = self.load_data(d)
+                    self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(d)
                 else:
-                    timestamps, mass_axis, sum_spectrum, tof_data = self.load_data(d)
+                    timestamps, mass_axis, sum_spectrum, tof_data, metadata = self.load_data(d)
                     self.timestamps = np.concatenate([self.timestamps, timestamps])
                     np.add(self.sum_spectrum, sum_spectrum, out=self.sum_spectrum)
                     self.tof_data = np.concatenate([self.tof_data, tof_data])
+                    self.metadata = np.concatenate([self.metadata, metadata])
         else:
-            self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data = self.load_data(data)
+            self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(data)
 
         # YAML configuration files contain information for computing time series and functional groups
         self.path_to_mass_list = kwargs.pop('path_to_mass_list', 'vocus/config/mass_list.yml')
@@ -55,8 +56,9 @@ class Vocus(object):
             mass_axis = self.get_mass_axis(f)
             sum_spectrum = self.get_sum_spectrum(f)
             tof_data = self.get_tof_data(f, len(timestamps), len(mass_axis))
+            metadata = self.get_metadata(f)
 
-        return timestamps, mass_axis, sum_spectrum, tof_data
+        return timestamps, mass_axis, sum_spectrum, tof_data, metadata
 
     def get_times(self, f):
         """
@@ -91,6 +93,22 @@ class Vocus(object):
         tof_data = np.array(f['FullSpectra']['TofData'])
         tof_data = tof_data.reshape(t, n)
         return tof_data
+
+    def get_metadata(self, f):
+        """
+        returns array of metadata that corresponds to each measurement. 
+        The metadata is currently stored in:
+        TPS2
+        ---> TEMP_INLET target [C]
+        by Jordan
+        """
+        # times of observation are recorded as second offsets from start time
+        buftimes = np.array(f['TimingData']['BufTimes'])
+
+        metadata = np.array(f['TPS2']['TwData'])
+        metadata_array = np.array(metadata[:, 87])
+
+        return np.repeat(metadata_array, buftimes.shape[1])
 
     def get_sum_spectrum(self, f):
         """
@@ -151,6 +169,8 @@ class Vocus(object):
         time_series_df['timestamp'] = pd.to_datetime(time_series_df['timestamp'])
         time_series_df = time_series_df.set_index('timestamp', drop=True)
 
+        time_series_df['metadata'] = self.metadata
+
         return time_series_df
 
     def time_series_df_from_yaml(self):
@@ -188,6 +208,7 @@ class Vocus(object):
         #build grouped dataframe
         self.grouped_df = pd.DataFrame()
         self.grouped_df.index = self.time_series_df.index
+        self.grouped_df['metadata'] = self.time_series_df['metadata']
 
         for group in groups_smiles_dict.keys():
             self.grouped_df[group] = self.time_series_df[groups_smiles_dict[group]['smiles']].sum(axis=1)
