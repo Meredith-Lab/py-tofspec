@@ -66,7 +66,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(indices[1], 19468)
 
         #test integration of peak
-        integrated_peak = vocus.integrate.integrate_peak(self.single.tof_data[6], self.single.mass_axis, 19, 20)
+        integrated_peak = vocus.integrate.integrate_peak(self.single.tof_data[6], self.single.mass_axis, indices)
         # make sure the value is between 0.2657 and 0.2659
         ## actual answer should be ~ 0.2658267
         self.assertGreaterEqual(integrated_peak, 0.2657)
@@ -88,4 +88,6 @@ class TestClass(unittest.TestCase):
         self.single.group_time_series_df()
 
         self.assertIsInstance(self.single.grouped_df, pd.DataFrame)
-        self.assertEqual(list(self.single.groups), list(self.single.grouped_df.columns))
+        grouped_columns = list(self.single.grouped_df.columns)
+        grouped_columns.remove('metadata')
+        self.assertEqual(list(self.single.groups), grouped_columns)
