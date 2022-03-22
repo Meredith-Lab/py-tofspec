@@ -42,4 +42,4 @@ def integrate_peak(y, x, indices):
 
     s = slice(indices[0], indices[1] + 1)
 
-    return np.trapz(y[s], x[s])
+    return np.trapz(y[:, s], x[s])

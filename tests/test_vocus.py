@@ -66,7 +66,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(indices[1], 19468)
 
         #test integration of peak
-        integrated_peak = vocus.integrate.integrate_peak(self.single.tof_data[6], self.single.mass_axis, indices)
+        integrated_peak = vocus.integrate.integrate_peak(self.single.tof_data, self.single.mass_axis, indices)[6]
         # make sure the value is between 0.2657 and 0.2659
         ## actual answer should be ~ 0.2658267
         self.assertGreaterEqual(integrated_peak, 0.2657)
