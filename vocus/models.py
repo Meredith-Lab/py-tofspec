@@ -141,7 +141,9 @@ class Vocus(object):
             mass_lower = mass[0]
             mass_upper = mass[1]
 
-        tof_time_series = np.array([(integrate_peak(self.tof_data[i], self.mass_axis, mass_lower, mass_upper)) for i in range(len(self.tof_data))])
+        indices = find_indices(self.mass_axis, mass_lower, mass_upper)
+
+        tof_time_series = np.array([(integrate_peak(self.tof_data[i], self.mass_axis, indices)) for i in range(len(self.tof_data))])
 
         return tof_time_series
         

@@ -25,7 +25,7 @@ def find_indices(x, xlower, xupper):
 
     return indices
 
-def integrate_peak(y, x, xlower, xupper):
+def integrate_peak(y, x, indices):
     """
     Integrate along the given axis in a certain x-range using the composite trapezoidal rule.
 
@@ -33,15 +33,12 @@ def integrate_peak(y, x, xlower, xupper):
     :type y: array_like
     :param x: array of x-values corresponding to y
     :type x: array-like
-    :param xlower: lower bound
-    :type xlower: int/float
-    :param xupper: upper bound
-    :type xupper: int/float
+    :param indices: indices that match up with input value range
+    :type indices: tuple
     :return trapz: Definite integral of y = n-dimensional array as approximated along a
                  single axis by the trapezoidal rule.
     :rtype: float
     """
-    indices = find_indices(x, xlower, xupper)
 
     s = slice(indices[0], indices[1] + 1)
 
