@@ -6,6 +6,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import h5py
 import yaml
+import click
 
 from .integrate import *
 from .utils import *
@@ -22,15 +23,16 @@ class Vocus(object):
     def __init__(self, data, **kwargs):
         # load in Vocus data
         if type(data) is list:
-            for i,d in enumerate(data):
-                if i == 0:
-                    self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(d)
-                else:
-                    timestamps, mass_axis, sum_spectrum, tof_data, metadata = self.load_data(d)
-                    self.timestamps = np.concatenate([self.timestamps, timestamps])
-                    np.add(self.sum_spectrum, sum_spectrum, out=self.sum_spectrum)
-                    self.tof_data = np.concatenate([self.tof_data, tof_data])
-                    self.metadata = np.concatenate([self.metadata, metadata])
+            with click.progressbar(data, label='Loading in .h5 files') as bar:
+                for i,d in enumerate(bar):
+                    if i == 0:
+                        self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(d)
+                    else:
+                        timestamps, mass_axis, sum_spectrum, tof_data, metadata = self.load_data(d)
+                        self.timestamps = np.concatenate([self.timestamps, timestamps])
+                        np.add(self.sum_spectrum, sum_spectrum, out=self.sum_spectrum)
+                        self.tof_data = np.concatenate([self.tof_data, tof_data])
+                        self.metadata = np.concatenate([self.metadata, metadata])
         else:
             self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(data)
 
@@ -131,7 +133,7 @@ class Vocus(object):
         the bin for integration is assumed to have a width of 1. Otherwise, mass should be passed as a tuple
         of the form (mass_lower, mass_upper), and mass_range should be specified as True.
         """
-        binsize = 1
+        binsize = kwargs.pop('binsize', 1)
         mass_range = kwargs.pop('mass_range', False)
 
         if mass_range == False:
@@ -156,7 +158,10 @@ class Vocus(object):
         mass_range = kwargs.pop('mass_range', False)
         names = kwargs.pop('names', None)
 
-        time_series_masses = [self.get_time_series(m, mass_range=mass_range) for m in masses]
+        time_series_masses = []
+        with click.progressbar(masses, label='computing time series data') as bar:
+            for m in bar:
+                time_series_masses.append(self.get_time_series(m, mass_range=mass_range))
         time_series_masses.insert(0, self.timestamps)
 
         if names == None:
