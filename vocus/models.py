@@ -171,53 +171,60 @@ class Vocus(object):
         else:
             names.insert(0, 'timestamp')
 
-        time_series_df = df_from_arrays(arrays=time_series_masses, names=names)
-
+        time_series_df = pd.DataFrame(dict(zip(names, time_series_masses)))
         time_series_df['timestamp'] = pd.to_datetime(time_series_df['timestamp'])
         time_series_df = time_series_df.set_index('timestamp', drop=True)
 
         time_series_df['metadata'] = self.metadata
+        time_series_df['metadata'] = time_series_df['metadata'].astype(int)
 
         return time_series_df
 
-    def time_series_df_from_yaml(self):
+    def time_series_df_from_yaml(self, **kwargs):
         """
         Using the default mass list in the config/mass_list.yml file, create a time series 
         dataframe with a column for every compound in the list
         """
-        self.ion_name, self.smiles, min, max, center = ion_lists_from_dict(read_yaml(self.path_to_mass_list))
+        path_to_mass_list = kwargs.pop('path_to_mass_list', self.path_to_mass_list)
+        columns = kwargs.pop('columns', 'mf')
+        compound, ion, self.mf, min, max, center = mass_list_from_dict(read_yaml(path_to_mass_list))
         self.masses = [list(x) for x in zip(min, max)]
 
-        self.time_series_df = self.get_time_series_df(self.masses, names=self.smiles, mass_range=True)
+        names_dict = {'compound': compound,
+                        'ion': ion,
+                        'mf': self.mf}
+        self.time_series_df = self.get_time_series_df(self.masses, names=names_dict[columns], mass_range=True)
+        
+        self.time_series_df = self.time_series_df.sort_index()
 
         return self.time_series_df
 
-    def group_time_series_df(self, **kwargs):
-        """
-        based on the groups that the user specifies, or by default listed in the config/grouping.yml file,
-        sum the time series dataframe to have those groups as columns
-        """
-        #if user inputs a list of groups
-        groups = kwargs.pop('groups', self.groups)
-        if set(groups).issubset(self.possible_groups):
-            pass
-        else:
-            groups = self.groups
+    # def group_time_series_df(self, **kwargs):
+    #     """
+    #     based on the groups that the user specifies, or by default listed in the config/grouping.yml file,
+    #     sum the time series dataframe to have those groups as columns
+    #     """
+    #     #if user inputs a list of groups
+    #     groups = kwargs.pop('groups', self.groups)
+    #     if set(groups).issubset(self.possible_groups):
+    #         pass
+    #     else:
+    #         groups = self.groups
 
-        #get all of the compounds SMILES for each group
-        groups_smiles_dict = {}
-        for f in groups:
-            groups_smiles_dict[f] = {'smiles': [],}
-            for compound in self.voc_dict:
-                if f in compound['groups']:
-                    groups_smiles_dict[f]['smiles'].append(compound['smiles'])
+    #     #get all of the compounds SMILES for each group
+    #     groups_smiles_dict = {}
+    #     for f in groups:
+    #         groups_smiles_dict[f] = {'smiles': [],}
+    #         for compound in self.voc_dict:
+    #             if f in compound['groups']:
+    #                 groups_smiles_dict[f]['smiles'].append(compound['smiles'])
 
-        #build grouped dataframe
-        self.grouped_df = pd.DataFrame()
-        self.grouped_df.index = self.time_series_df.index
-        self.grouped_df['metadata'] = self.time_series_df['metadata']
+    #     #build grouped dataframe
+    #     self.grouped_df = pd.DataFrame()
+    #     self.grouped_df.index = self.time_series_df.index
+    #     self.grouped_df['metadata'] = self.time_series_df['metadata']
 
-        for group in groups_smiles_dict.keys():
-            self.grouped_df[group] = self.time_series_df[groups_smiles_dict[group]['smiles']].sum(axis=1)
+    #     for group in groups_smiles_dict.keys():
+    #         self.grouped_df[group] = self.time_series_df[groups_smiles_dict[group]['smiles']].sum(axis=1)
 
-        return self.grouped_df
+    #     return self.grouped_df

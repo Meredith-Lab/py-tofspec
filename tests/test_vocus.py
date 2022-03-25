@@ -41,16 +41,18 @@ class TestClass(unittest.TestCase):
         #read in mass list and check
         mass_list_dict = vocus.utils.read_yaml("vocus/config/mass_list.yml")
         self.assertIsInstance(mass_list_dict, dict)
-        ion_name, smiles, min, max, center = vocus.utils.ion_lists_from_dict(mass_list_dict)
-        self.assertIsInstance(ion_name, list)
-        self.assertIsInstance(ion_name[0], str)
-        self.assertIsInstance(smiles, list)
-        self.assertIsInstance(smiles[0], str)
+        compound, ion, mf, min, max, center = vocus.utils.mass_list_from_dict(mass_list_dict)
+        self.assertIsInstance(compound, list)
+        self.assertIsInstance(compound[0], str)
+        self.assertIsInstance(ion, list)
+        self.assertIsInstance(ion[0], str)
+        self.assertIsInstance(mf, list)
+        self.assertIsInstance(mf[0], str)
         self.assertIsInstance(min, list)
         self.assertIsInstance(max, list)
         self.assertIsInstance(center, list)
         
-        self.assertGreater(len(ion_name), 0)
+        self.assertGreater(len(compound), 0)
 
         #read in voc db and check
         self.assertIsInstance(self.single.voc_dict, list)
@@ -81,13 +83,13 @@ class TestClass(unittest.TestCase):
         mass_list_df = self.single.time_series_df_from_yaml()
         self.assertIsInstance(mass_list_df, pd.DataFrame)
 
-        #test grouping yml file is configured correctly (list of chosen groups)
-        self.assertGreater(len(self.single.groups), 0)
+        # #test grouping yml file is configured correctly (list of chosen groups)
+        # self.assertGreater(len(self.single.groups), 0)
 
-        #group and sum using chosen groups
-        self.single.group_time_series_df()
+        # #group and sum using chosen groups
+        # self.single.group_time_series_df()
 
-        self.assertIsInstance(self.single.grouped_df, pd.DataFrame)
-        grouped_columns = list(self.single.grouped_df.columns)
-        grouped_columns.remove('metadata')
-        self.assertEqual(list(self.single.groups), grouped_columns)
+        # self.assertIsInstance(self.single.grouped_df, pd.DataFrame)
+        # grouped_columns = list(self.single.grouped_df.columns)
+        # grouped_columns.remove('metadata')
+        # self.assertEqual(list(self.single.groups), grouped_columns)
