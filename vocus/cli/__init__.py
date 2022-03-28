@@ -49,8 +49,20 @@ def metadata_integrate(datapath, output, **kwargs):
 
     metadata_integration_command(datapath, output)  
 
+#add merge integration command
+@click.command("merge", short_help="merge time series data")
+@click.argument("files", nargs=-1, type=click.Path())
+@click.option("-o", "--output", default="output.csv", help="output filepath (must be .csv or .feather)", type=str)
+def merge(files, output, **kwargs):
+    """Merge time series .csv files along their timestamp axis
+    """
+    from .commands.merge import merge_command
+
+    merge_command(files, output)  
+
 
 #add all commands
 main.add_command(concat)
 main.add_command(timeseries)
 main.add_command(metadata_integrate)
+main.add_command(merge)
