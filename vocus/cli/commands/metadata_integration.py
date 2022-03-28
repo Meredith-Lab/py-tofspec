@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import click
 
+from vocus.utils import safe_load
+
 from ...models import Vocus
 from ...exceptions import InvalidFileExtension, InvalidArgument
 
@@ -23,7 +25,7 @@ def metadata_integration_command(datapath, output, non_data=[100,10,98,99]):
     save_as_csv = True if output.suffix == ".csv" else False
 
     #load in time series dataframe -- output from timeseries or concat command
-    df = pd.read_csv(datapath)
+    df = safe_load(datapath)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df = df.set_index('timestamp', drop=True)
 

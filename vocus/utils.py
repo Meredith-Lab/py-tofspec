@@ -4,6 +4,35 @@
 import pandas as pd
 import numpy as np
 import yaml
+from pathlib import Path
+
+from .exceptions import InvalidFileExtension
+
+def safe_load(fpath, **kwargs):
+    """Load and return a file
+    """
+    p = Path(fpath)
+
+    if p.suffix == ".csv":
+        as_csv = True
+    elif p.suffix == ".feather":
+        as_csv = False
+    else:
+        raise InvalidFileExtension
+
+    tmp = pd.read_csv(fpath, nrows=1, header=None) if as_csv else pd.read_feather(fpath)
+
+    if tmp.iloc[0, 0] == "deviceModel": # hack to deal with PID data format
+        tmp = pd.read_csv(fpath, skiprows=3) if as_csv else pd.read_feather(fpath, skiprows=3)
+    else:
+        tmp = pd.read_csv(fpath) if as_csv else pd.read_feather(fpath)
+
+    # drop the extra column if it was added
+    if "Unnamed: 0" in tmp.columns:
+        del tmp["Unnamed: 0"]
+
+    return tmp
+
 
 #For normalization of y-axis
 def normalize_data(data):

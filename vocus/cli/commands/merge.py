@@ -7,6 +7,7 @@ import numpy as np
 import click
 
 from ...exceptions import InvalidFileExtension
+from ...utils import safe_load
 
 def merge_command(files, output, **kwargs):
     # create an array of timestamp column names to try
@@ -24,11 +25,8 @@ def merge_command(files, output, **kwargs):
     df = pd.DataFrame()
     with click.progressbar(files, label="Parsing files") as bar:
         for f in bar:
-            tmp = pd.read_csv(f)
-
-            # hack to support PID .csv data
-            if tmp.iloc[0, 0] == 'deviceID':
-                tmp = pd.read_csv(f, skiprows=3)
+            tmp = safe_load(f)
+            print(tmp.head(2))
             
             # check for the column name and set to best guess
             for c in tscols:

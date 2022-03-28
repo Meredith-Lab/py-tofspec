@@ -7,6 +7,7 @@ import numpy as np
 import click
 
 from ...exceptions import InvalidFileExtension
+from ...utils import safe_load
 
 
 def concat_command(files, output, **kwargs):
@@ -25,7 +26,7 @@ def concat_command(files, output, **kwargs):
     data = []
     with click.progressbar(files, label="Parsing files") as bar:
         for f in bar:
-            tmp = pd.read_csv(f)
+            tmp = safe_load(f)
 
             data.append(tmp)
 
