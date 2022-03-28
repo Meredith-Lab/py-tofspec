@@ -38,6 +38,19 @@ def timeseries(datapath, yaml, output, columns, **kwargs):
 
     time_series_command(datapath, output, columns=columns, path_to_mass_list=yaml, **kwargs)
 
+#add metadata integration command
+@click.command("metadata_integrate", short_help="integrate time series data for each sampling run")
+@click.argument("datapath", nargs=1, type=click.Path())
+@click.option("-o", "--output", default="output.csv", help="output filepath (must be .csv or .feather)", type=str)
+def metadata_integrate(datapath, output, **kwargs):
+    """Use the metadata to integrate/downsample time series data for each sampling run
+    """
+    from .commands.metadata_integration import metadata_integration_command
+
+    metadata_integration_command(datapath, output)  
+
+
 #add all commands
 main.add_command(concat)
 main.add_command(timeseries)
+main.add_command(metadata_integrate)
