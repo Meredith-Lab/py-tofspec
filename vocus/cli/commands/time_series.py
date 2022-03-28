@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from pathlib import Path
 import pandas as pd
 import numpy as np
 import click
-from pyparsing import col
 
 from ...models import Vocus
 from ...exceptions import InvalidFileExtension, InvalidArgument
