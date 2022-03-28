@@ -66,19 +66,21 @@ def read_yaml(name):
         data = yaml.load(f, Loader=yaml.SafeLoader)
     return data
 
-def ion_lists_from_dict(data):
-    ion_name = []
-    smiles = []
+def mass_list_from_dict(data):
+    compound = []
+    ion = []
+    mf = []
     min = []
     max = []
     center = []
-    for i in data['ions']:
-        ion_name.append(i['ion-name'])
-        smiles.append(i['smiles'])
+    for i in data['compounds']:
+        compound.append(i['compound'])
+        ion.append(i['ion'])
+        mf.append(i['mf'])
         min.append(i['mass-range']['min'])
         max.append(i['mass-range']['max'])
         center.append(i['mass-range']['center'])
-    return ion_name, smiles, min, max, center
+    return compound, ion, mf, min, max, center
 
 def voc_lists_from_dict(data):
     name = []
