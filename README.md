@@ -31,12 +31,12 @@ The `timeseries` command takes the `.h5` files within DATAPATH, reads the input 
 $ vocus timeseries [OPTIONS] DATAPATH
 ```
 Options:
--o, --output <output>
-output filepath (must be .csv or .feather)
--y, --yaml
-YAML file compound list used to build the time series
--c, --columns
-column names in output dataframe (compound, mf, ion)
+- -o, --output <output>
+    - output filepath (must be .csv or .feather)
+- -y, --yaml
+    - YAML file compound list used to build the time series
+- -c, --columns
+    - column names in output dataframe (compound, mf, ion)
 
 
 ## Integrate Time Series Data based on Metadata Column
@@ -49,7 +49,8 @@ The `metadata_integrate` command takes a time-series DATAPATH, integrates for ea
 $ vocus metadata_integrate [OPTIONS] DATAPATH
 ```
 Options:
-  -o, --output TEXT output filepath (must be .csv or .feather)
+-  -o, --output TEXT 
+    - output filepath (must be .csv or .feather)
 
 
 ## Concatenate Time Series Data
@@ -64,7 +65,8 @@ a list, each separated by a space, or by using a wildcard and providing the path
 $ vocus concat [OPTIONS] [FILES]...
 ```
 Options:
-  -o, --output TEXT  The filepath where you would like to save the file
+-  -o, --output TEXT 
+    - The filepath where you would like to save the file
 
 ## Merge Time Series Data
 
@@ -75,4 +77,5 @@ Merge time series .csv (or .feather) files along their timestamp axis
 $ vocus merge [OPTIONS] [FILES]...
 ```
 Options:
-  -o, --output TEXT  The filepath where you would like to save the file
+-  -o, --output TEXT 
+    - The filepath where you would like to save the file
