@@ -199,6 +199,54 @@ class Vocus(object):
 
         return self.time_series_df
 
+    def metadata_integrate(self, **kwargs):
+        non_data = kwargs.pop('non_data', [100,10,98,99])
+
+        #save list of data columns
+        cols = list(self.time_series_df.columns)
+        cols.remove('metadata')
+
+        # assemble the dictionary for aggregating 
+        # 1. sum the data columns
+        # 2. take the mean time during sampling run
+        # 3. keep same metadata
+        col_dict = {i:np.sum for i in cols}
+        agg_dict = {'timestamp':np.mean,
+                    'metadata': np.median,}
+        agg_dict.update(col_dict)
+
+        #group by metadata
+        g = self.time_series_df.groupby(by='metadata')
+
+        #filter non data values, we only care about probe measurements
+        real_data = self.time_series_df.metadata.unique()
+        real_data = list(set(real_data) - set(non_data))
+
+        groups = []
+        # for each probe
+        for i in real_data:
+            subgroup = g.get_group(i)
+            #sort by time
+            subgroup = subgroup.sort_index()
+            #check for gaps -- integrate individual sampling runs
+            subgroup[1] = subgroup.index.to_series().diff()
+            subgroup[1] = subgroup[1] > timedelta(seconds=5) #more than 5 second break means new sampling scheme
+            subgroup[1] = subgroup[1].cumsum()
+            subgroup.reset_index(inplace=True)
+
+            #do the integration -- sum over observations, take the mean time of the sampling run 
+            subgroup = subgroup.groupby(1).agg(agg_dict)
+            #reset index
+            subgroup.set_index('timestamp', inplace=True)
+
+            groups.append(subgroup)
+
+        integrated_df = pd.concat(groups)
+
+        integrated_df.sort_values('timestamp', inplace=True)
+
+        return integrated_df
+
     # def group_time_series_df(self, **kwargs):
     #     """
     #     based on the groups that the user specifies, or by default listed in the config/grouping.yml file,

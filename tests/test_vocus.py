@@ -19,6 +19,7 @@ class TestClass(unittest.TestCase):
     def setUp(self):
         #test load single file
         self.single = vocus.models.Vocus(short_data)
+        self.multiple = vocus.models.Vocus([short_data, long_data])
 
     def test_version(self):
         assert __version__ == '0.1.0'
@@ -26,7 +27,6 @@ class TestClass(unittest.TestCase):
     def test_load(self):
         assert isinstance(self.single, vocus.models.Vocus)
         #test load list of files
-        self.multiple = vocus.models.Vocus([short_data, long_data])
         assert isinstance(self.multiple, vocus.models.Vocus)
 
     def test_data(self):
@@ -93,3 +93,9 @@ class TestClass(unittest.TestCase):
         # grouped_columns = list(self.single.grouped_df.columns)
         # grouped_columns.remove('metadata')
         # self.assertEqual(list(self.single.groups), grouped_columns)
+
+    def test_metadata_integrate(self):
+        long_df = self.multiple.time_series_df_from_yaml()
+
+        integrated_df = self.multiple.metadata_integrate()
+        self.assertIsInstance(integrated_df, pd.DataFrame)

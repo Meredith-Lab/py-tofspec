@@ -16,7 +16,10 @@ from ...exceptions import InvalidFileExtension, InvalidArgument
 # In other words, we can use the metadata to sum the concentrations for each compound and soil column.
 
 def metadata_integration_command(datapath, output, non_data=[100,10,98,99]):
-
+    """
+    datapath should be either a .csv or .feather file containing time series vocus data.
+    Columns: timestamp, metadata, [compounds]
+    """
     # make sure the extension is either a csv or feather format
     output = Path(output)
     if output.suffix not in (".csv", ".feather"):
@@ -69,6 +72,8 @@ def metadata_integration_command(datapath, output, non_data=[100,10,98,99]):
         groups.append(subgroup)
 
     integrated_df = pd.concat(groups)
+
+    integrated_df.sort_values('timestamp', inplace=True)
 
     # save the file
     click.secho("Saving file to {}".format(output), fg='green')
