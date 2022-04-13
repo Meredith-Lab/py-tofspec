@@ -28,21 +28,17 @@ class Vocus(object):
                     if i == 0:
                         self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(d)
                     else:
-                        timestamps, mass_axis, sum_spectrum, tof_data, metadata = self.load_data(d)
-                        self.timestamps = np.concatenate([self.timestamps, timestamps])
-                        np.add(self.sum_spectrum, sum_spectrum, out=self.sum_spectrum)
-                        self.tof_data = np.concatenate([self.tof_data, tof_data])
-                        self.metadata = np.concatenate([self.metadata, metadata])
+                        self.add_data(d)
         else:
             self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(data)
 
         # YAML configuration files contain information for computing time series and functional groups
         self.path_to_mass_list = kwargs.pop('path_to_mass_list', 'vocus/config/mass_list.yml')
-        self.path_to_voc_db = kwargs.pop('path_to_voc_db', 'vocus/config/voc_db.yml')
+        # self.path_to_voc_db = kwargs.pop('path_to_voc_db', 'vocus/config/voc_db.yml')
 
-        self.voc_dict = read_yaml(self.path_to_voc_db)['compounds']
-        self.possible_groups = read_yaml('vocus/config/grouping.yml')['possible-groups']
-        self.groups = read_yaml('vocus/config/grouping.yml')['chosen-groups']
+        # self.voc_dict = read_yaml(self.path_to_voc_db)['compounds']
+        # self.possible_groups = read_yaml('vocus/config/grouping.yml')['possible-groups']
+        # self.groups = read_yaml('vocus/config/grouping.yml')['chosen-groups']
 
         return
 
@@ -61,6 +57,21 @@ class Vocus(object):
             metadata = self.get_metadata(f)
 
         return timestamps, mass_axis, sum_spectrum, tof_data, metadata
+
+    def add_data(self, data):
+        timestamps, mass_axis, sum_spectrum, tof_data, metadata = self.load_data(data)
+        self.timestamps = np.concatenate([self.timestamps, timestamps])
+        np.add(self.sum_spectrum, sum_spectrum, out=self.sum_spectrum)
+        self.tof_data = np.concatenate([self.tof_data, tof_data])
+        self.metadata = np.concatenate([self.metadata, metadata])
+
+        return
+
+    def __add__(self, other):
+        self.timestamps = np.concatenate([self.timestamps, other.timestamps])
+        np.add(self.sum_spectrum, other.sum_spectrum, out=self.sum_spectrum)
+        self.tof_data = np.concatenate([self.tof_data, other.tof_data])
+        self.metadata = np.concatenate([self.metadata, other.metadata])
 
     def get_times(self, f):
         """
