@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import h5py
 import yaml
 import click
+from itertools import chain
 
 from .integrate import *
 from .utils import *
@@ -33,7 +34,9 @@ class Vocus(object):
             self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(data)
 
         # YAML configuration files contain information for computing time series and functional groups
-        self.path_to_mass_list = kwargs.pop('path_to_mass_list', 'vocus/config/mass_list.yml')
+        self.voc_dict = read_yaml('vocus/config/voc-db.yml')
+
+        # self.path_to_mass_list = kwargs.pop('path_to_mass_list', 'vocus/config/mass_list.yml')
         # self.path_to_voc_db = kwargs.pop('path_to_voc_db', 'vocus/config/voc_db.yml')
 
         # self.voc_dict = read_yaml(self.path_to_voc_db)['compounds']
@@ -195,16 +198,14 @@ class Vocus(object):
         """
         Using the default mass list in the config/mass_list.yml file, create a time series 
         dataframe with a column for every compound in the list
-        """
-        path_to_mass_list = kwargs.pop('path_to_mass_list', self.path_to_mass_list)
-        columns = kwargs.pop('columns', 'mf')
-        compound, ion, self.mf, min, max, center = mass_list_from_dict(read_yaml(path_to_mass_list))
+        # """
+        # path_to_mass_list = kwargs.pop('path_to_mass_list', self.path_to_mass_list)
+        # columns = kwargs.pop('columns', 'mf')
+        # compound, ion, self.mf, min, max, center = mass_list_from_dict(read_yaml(path_to_mass_list))
+        ion, _, min, max, _, _ = vocdb_from_dict(self.voc_dict)
         self.masses = [list(x) for x in zip(min, max)]
 
-        names_dict = {'compound': compound,
-                        'ion': ion,
-                        'mf': self.mf}
-        self.time_series_df = self.get_time_series_df(self.masses, names=names_dict[columns], mass_range=True)
+        self.time_series_df = self.get_time_series_df(self.masses, names=ion, mass_range=True)
         
         self.time_series_df = self.time_series_df.sort_index()
 
@@ -257,6 +258,33 @@ class Vocus(object):
         integrated_df.sort_values('timestamp', inplace=True)
 
         return integrated_df
+
+    def group_time_series_df(self, **kwargs):
+        """
+         based on the groups listed in the config/voc-db.yml file,
+         sum the time series dataframe to have those groups as columns
+        """
+        ion, smiles, min, max, center, groups = vocdb_from_dict(self.voc_dict)
+
+        group_list = set(chain(*groups))
+
+        #get all of the compounds in each group
+        groups_smiles_dict = {}
+        for f in group_list:
+            groups_smiles_dict[f] = {'ions': [],}
+            for ion in self.voc_dict['ions']:
+                if f in ion['groups']:
+                    groups_smiles_dict[f]['ions'].append(ion['ion-name'])
+
+        #build grouped dataframe
+        self.grouped_df = pd.DataFrame()
+        self.grouped_df.index = self.time_series_df.index
+        self.grouped_df['metadata'] = self.time_series_df['metadata']
+
+        for group in groups_smiles_dict.keys():
+            self.grouped_df[group] = self.time_series_df[groups_smiles_dict[group]['ions']].sum(axis=1)
+
+        return self.grouped_df
 
     # def group_time_series_df(self, **kwargs):
     #     """

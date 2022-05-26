@@ -16,6 +16,7 @@ pandas = "^1.4.1"
 click = "^8.0.4"
 h5py = "^3.6.0"
 pyarrow = "^7.0.0"
+dask = "^2022.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

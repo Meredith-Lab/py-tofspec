@@ -57,6 +57,22 @@ def mass_list_from_dict(data):
         center.append(i['mass-range']['center'])
     return compound, ion, mf, min, max, center
 
+def vocdb_from_dict(data):
+    ion = []
+    smiles = []
+    min = []
+    max = []
+    center = []
+    groups = []
+    for i in data['ions']:
+        ion.append(i['ion-name'])
+        smiles.append(i['smiles'])
+        min.append(i['mass-range']['min'])
+        max.append(i['mass-range']['max'])
+        center.append(i['mass-range']['center'])
+        groups.append(i['groups'])
+    return ion, smiles, min, max, center, groups
+
 def voc_lists_from_dict(data):
     name = []
     formula = []
