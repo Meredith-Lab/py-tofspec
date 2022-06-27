@@ -122,9 +122,12 @@ class Vocus(object):
         buftimes = np.array(f['TimingData']['BufTimes'])
 
         metadata = np.array(f['TPS2']['TwData'])
-        metadata_array = np.array(metadata[:, 87])
-
-        return np.repeat(metadata_array, buftimes.shape[1])
+        try:
+            metadata_array = np.array(metadata[:, 87])
+            return np.repeat(metadata_array, buftimes.shape[1])
+        except:
+            metadata_array = metadata[:,:,85].reshape(-1)
+            return metadata_array
 
     def get_sum_spectrum(self, f):
         """
