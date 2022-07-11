@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import h5py
+from regex import P
 import yaml
 import click
 from itertools import chain
@@ -12,136 +13,22 @@ from itertools import chain
 from .integrate import *
 from .utils import *
 
-class Vocus(object):
+class TOFSpec(object):
     """
-    Vocus is a class for wrangling Vocus PTR-TOF-MS data, and generating
+    TOFSpec is a class for wrangling PTR-TOF-MS data, and generating
     labeled time-series datasets that are useful for analyzing data, 
     visualizing data, building machine learning models, and more.
 
     :param data: hdf5 filepath (or list of hdf5 filepaths)
     :type data: str or list[str]
     """
-    def __init__(self, data, **kwargs):
-        # load in Vocus data
-        if type(data) is list:
-            with click.progressbar(data, label='Loading in .h5 files') as bar:
-                for i,d in enumerate(bar):
-                    if i == 0:
-                        self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(d)
-                    else:
-                        self.add_data(d)
-        else:
-            self.timestamps, self.mass_axis, self.sum_spectrum, self.tof_data, self.metadata = self.load_data(data)
-
-        # YAML configuration files contain information for computing time series and functional groups
-        self.voc_dict = read_yaml('vocus/config/voc-db.yml')
-
-        # self.path_to_mass_list = kwargs.pop('path_to_mass_list', 'vocus/config/mass_list.yml')
-        # self.path_to_voc_db = kwargs.pop('path_to_voc_db', 'vocus/config/voc_db.yml')
-
-        # self.voc_dict = read_yaml(self.path_to_voc_db)['compounds']
-        # self.possible_groups = read_yaml('vocus/config/grouping.yml')['possible-groups']
-        # self.groups = read_yaml('vocus/config/grouping.yml')['chosen-groups']
+    def __init__(self, tof_data, mass_axis, **kwargs):
+        self.tof_data = tof_data
+        self.mass_axis = mass_axis
+        self.timestamps = kwargs.pop('timestamps', None)
+        self.metadata = kwargs.pop('metadata', None)
 
         return
-
-    ## methods for wrangling hdf5 file data and compiling into some properties
-    def load_data(self, data):
-        """
-        extracts useful data from Vocus hdf5 file.
-        :param data: hdf5 filepath
-        :type data: str
-        """
-        with h5py.File(data, "r") as f:
-            timestamps = self.get_times(f)
-            mass_axis = self.get_mass_axis(f)
-            sum_spectrum = self.get_sum_spectrum(f)
-            tof_data = self.get_tof_data(f, len(timestamps), len(mass_axis))
-            metadata = self.get_metadata(f)
-
-        return timestamps, mass_axis, sum_spectrum, tof_data, metadata
-
-    def add_data(self, data):
-        timestamps, mass_axis, sum_spectrum, tof_data, metadata = self.load_data(data)
-        self.timestamps = np.concatenate([self.timestamps, timestamps])
-        np.add(self.sum_spectrum, sum_spectrum, out=self.sum_spectrum)
-        self.tof_data = np.concatenate([self.tof_data, tof_data])
-        self.metadata = np.concatenate([self.metadata, metadata])
-
-        return
-
-    def __add__(self, other):
-        self.timestamps = np.concatenate([self.timestamps, other.timestamps])
-        np.add(self.sum_spectrum, other.sum_spectrum, out=self.sum_spectrum)
-        self.tof_data = np.concatenate([self.tof_data, other.tof_data])
-        self.metadata = np.concatenate([self.metadata, other.metadata])
-
-    def get_times(self, f):
-        """
-        extracts array of timestamps that match up with ToF data from Vocus file
-        """
-        # get experiment start time from log file and transform string to datetime
-        start_time = f['AcquisitionLog']['Log']['timestring'][0]
-        start_time = datetime.strptime(start_time.decode('UTF-8'), "%Y-%m-%dT%H:%M:%S+00:00")
-
-        # times of observation are recorded as second offsets from start time
-        buftimes = np.array(f['TimingData']['BufTimes'])
-        
-        timestamps = np.array([start_time + timedelta(seconds=i) for i in buftimes.reshape(-1)])
-        
-        # when the Vocus stops recording measurements, it still finishes out its last five second interval,
-        # and records the time of the empty measurements as the start time. This code sets the empty measurement
-        # times to NaN
-        mask = (timestamps == timestamps[0])
-        mask[0] = False
-
-        timestamps[mask] = np.nan
-
-        return timestamps
-    
-    def get_tof_data(self, f, t, n):
-        """
-        extracts array of ToF data of shape (t, n) where
-        t = number of snapshots that were taken during the experiment, or in other words the number of 
-        timesteps (typically seconds) that the experiment was running
-        n = number of mass bins that the mass spec is equipped to observe
-        """
-        tof_data = np.array(f['FullSpectra']['TofData'])
-        tof_data = tof_data.reshape(t, n)
-        return tof_data
-
-    def get_metadata(self, f):
-        """
-        returns array of metadata that corresponds to each measurement. 
-        The metadata is currently stored in:
-        TPS2
-        ---> TEMP_INLET target [C]
-        by Jordan
-        """
-        # times of observation are recorded as second offsets from start time
-        buftimes = np.array(f['TimingData']['BufTimes'])
-
-        metadata = np.array(f['TPS2']['TwData'])
-        try:
-            metadata_array = np.array(metadata[:, 87])
-            return np.repeat(metadata_array, buftimes.shape[1])
-        except:
-            metadata_array = metadata[:,:,85].reshape(-1)
-            return metadata_array
-
-    def get_sum_spectrum(self, f):
-        """
-        returns array that is the sum of all the ToF data taken during the experiment
-        """
-        sum_spectrum = np.array(f['FullSpectra']['SumSpectrum'])
-        return sum_spectrum
-
-    def get_mass_axis(self, f):
-        """
-        returns array of mass values that the ToF arrays correspond to
-        """
-        mass_axis = np.array(f['FullSpectra']['MassAxis'])
-        return mass_axis
 
     ## methods for munging and analyzing mass spec data by modifying object properties
     def get_time_series(self, mass, **kwargs):
@@ -179,16 +66,16 @@ class Vocus(object):
         with click.progressbar(masses, label='computing time series data') as bar:
             for m in bar:
                 time_series_masses.append(self.get_time_series(m, mass_range=mass_range))
-        time_series_masses.insert(0, self.timestamps)
 
-        if names == None:
-            names = ['timestamp']
+        if not self.timestamps:
+            time_series_masses.insert(0, self.timestamps)
+
+        if not names:
             for m in masses:
                 names.append('m{} abundance'.format(m))
-        else:
-            names.insert(0, 'timestamp')
 
         time_series_df = pd.DataFrame(dict(zip(names, time_series_masses)))
+
         time_series_df['timestamp'] = pd.to_datetime(time_series_df['timestamp'])
         time_series_df = time_series_df.set_index('timestamp', drop=True)
 
