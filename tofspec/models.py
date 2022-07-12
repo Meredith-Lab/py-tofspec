@@ -67,20 +67,22 @@ class TOFSpec(object):
             for m in bar:
                 time_series_masses.append(self.get_time_series(m, mass_range=mass_range))
 
-        if not self.timestamps:
-            time_series_masses.insert(0, self.timestamps)
-
-        if not names:
+        if names is None:
             for m in masses:
                 names.append('m{} abundance'.format(m))
 
+        if self.timestamps is not None:
+            names.insert(0, "timestamp")
+            time_series_masses.insert(0, self.timestamps)
+
         time_series_df = pd.DataFrame(dict(zip(names, time_series_masses)))
 
-        time_series_df['timestamp'] = pd.to_datetime(time_series_df['timestamp'])
-        time_series_df = time_series_df.set_index('timestamp', drop=True)
+        if "timestamp" in time_series_df.columns:
+            time_series_df['timestamp'] = pd.to_datetime(time_series_df['timestamp'])
+            time_series_df = time_series_df.set_index('timestamp', drop=True)
 
-        time_series_df['metadata'] = self.metadata
-        time_series_df['metadata'] = time_series_df['metadata'].astype(int)
+        if self.metadata is not None:
+            time_series_df['metadata'] = self.metadata
 
         return time_series_df
 

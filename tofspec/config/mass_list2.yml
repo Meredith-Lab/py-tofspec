@@ -1,0 +1,24 @@
+name: nsf-sits
+author: QuantAQ, Inc.
+compounds:
+-   compound: isoprene
+    ion: C5H9+
+    mf: C5H8
+    mass-range:
+        min: 69.065
+        max: 69.075
+        center: 69.0698776245
+-   compound: methyl vinyl ketone
+    ion: C4H7O+
+    mf: C4H6O
+    mass-range:
+        min: 71.044
+        max: 71.055
+        center: 71.0491409302
+-   compound: random compound
+    ion: test
+    mf: test
+    mass-range:
+        min: 100.044
+        max: 100.055
+        center: 100.0491409302
