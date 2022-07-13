@@ -10,17 +10,16 @@ from datetime import datetime, timedelta
 def load_vocus_data(file):
     """
     extracts useful data from Vocus hdf5 file.
-    :param data: hdf5 filepath
-    :type data: str
+    :param file: hdf5 filepath
+    :type file: str
     """
     with h5py.File(file, "r") as f:
         timestamps = get_times(f)
         mass_axis = get_mass_axis(f)
-        sum_spectrum = get_sum_spectrum(f)
         tof_data = get_tof_data(f, len(timestamps), len(mass_axis))
         metadata = get_metadata(f)
 
-    return timestamps, mass_axis, sum_spectrum, tof_data, metadata
+    return timestamps, mass_axis, tof_data, metadata
 
 def get_times(f):
     """
@@ -74,13 +73,6 @@ def get_metadata(f):
     except:
         metadata_array = metadata[:,:,85].reshape(-1)
         return metadata_array
-
-def get_sum_spectrum(f):
-    """
-    returns array that is the sum of all the ToF data taken during the experiment
-    """
-    sum_spectrum = np.array(f['FullSpectra']['SumSpectrum'])
-    return sum_spectrum
 
 def get_mass_axis(f):
     """
