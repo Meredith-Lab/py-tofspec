@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+vocus_test/
+*.ipynb
+hdf_test1.h5
+load_pid.py
+load_vocus.py
+long.feather
+output.csv
+output.feather
+short.feather
+metadata_integrate.py
+sits-data/data/raw/pid/DATA_20220216.csv

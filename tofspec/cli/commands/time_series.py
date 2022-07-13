@@ -50,3 +50,4 @@ def time_series_command(datapath, output, **kwargs):
     else:
         v.time_series_df.reset_index().to_feather(output)
     
+    

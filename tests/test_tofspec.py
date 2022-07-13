@@ -1,11 +1,11 @@
-from vocus import __version__
+from tofspec import __version__
 
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import h5py
 import yaml
-import vocus
+import tofspec
 import pytest
 import unittest
 
@@ -17,31 +17,28 @@ long_data = "tests/datafiles/V3_5min.h5"
 class TestClass(unittest.TestCase):
 
     def setUp(self):
+        timestamps, mass_axis, sum_spectrum, tof_data, metadata = tofspec.load_vocus_data(short_data)
         #test load single file
-        self.single = vocus.models.Vocus(short_data)
-        self.multiple = vocus.models.Vocus([short_data, long_data])
+        self.single = tofspec.models.TOFSpec(tof_data, mass_axis, timestamps=timestamps, metadata=metadata)
 
     def test_version(self):
         assert __version__ == '0.1.0'
     
     def test_load(self):
-        assert isinstance(self.single, vocus.models.Vocus)
-        #test load list of files
-        assert isinstance(self.multiple, vocus.models.Vocus)
+        assert isinstance(self.single, tofspec.models.TOFSpec)
 
     def test_data(self):
         #test timestamps length matches tof_data 
         assert self.single.tof_data.shape[0] == len(self.single.timestamps)
         #test tof_data bins length matches mass axis and sum spectrum length
         assert self.single.tof_data.shape[1] == len(self.single.mass_axis)
-        assert self.single.tof_data.shape[1] == len(self.single.sum_spectrum)
 
     def test_config(self):
         #test config files are correct format
         #read in mass list and check
-        mass_list_dict = vocus.utils.read_yaml("vocus/config/mass_list.yml")
+        mass_list_dict = tofspec.utils.read_yaml("tofspec/config/mass_list.yml")
         self.assertIsInstance(mass_list_dict, dict)
-        compound, ion, mf, min, max, center = vocus.utils.mass_list_from_dict(mass_list_dict)
+        compound, ion, mf, min, max, center = tofspec.utils.mass_list_from_dict(mass_list_dict)
         self.assertIsInstance(compound, list)
         self.assertIsInstance(compound[0], str)
         self.assertIsInstance(ion, list)
@@ -63,12 +60,12 @@ class TestClass(unittest.TestCase):
     def test_integration(self):
         #for these two util tests make sure you get the right answer
         #test find indices in sorted array based on value range
-        indices = vocus.integrate.find_indices(self.single.mass_axis, 19,20) 
+        indices = tofspec.integrate.find_indices(self.single.mass_axis, 19,20) 
         self.assertEqual(indices[0], 18668)
         self.assertEqual(indices[1], 19468)
 
         #test integration of peak
-        integrated_peak = vocus.integrate.integrate_peak(self.single.tof_data, self.single.mass_axis, indices)[6]
+        integrated_peak = tofspec.integrate.integrate_peak(self.single.tof_data, self.single.mass_axis, indices)[6]
         # make sure the value is between 0.2657 and 0.2659
         ## actual answer should be ~ 0.2658267
         self.assertGreaterEqual(integrated_peak, 0.2657)
@@ -80,7 +77,7 @@ class TestClass(unittest.TestCase):
         self.assertIsInstance(user_input_df, pd.DataFrame)
 
         #test time series df with masses from mass list
-        mass_list_df = self.single.time_series_df_from_yaml()
+        mass_list_df = self.single.time_series_df_from_yaml(peak_list="/Users/joepalmo/Desktop/NSF_SiTS/tofspec/tofspec/config/voc-db.yml")
         self.assertIsInstance(mass_list_df, pd.DataFrame)
 
         # #test grouping yml file is configured correctly (list of chosen groups)
@@ -93,9 +90,3 @@ class TestClass(unittest.TestCase):
         # grouped_columns = list(self.single.grouped_df.columns)
         # grouped_columns.remove('metadata')
         # self.assertEqual(list(self.single.groups), grouped_columns)
-
-    def test_metadata_integrate(self):
-        long_df = self.multiple.time_series_df_from_yaml()
-
-        integrated_df = self.multiple.metadata_integrate()
-        self.assertIsInstance(integrated_df, pd.DataFrame)

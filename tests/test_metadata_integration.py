@@ -7,7 +7,7 @@ import shutil, tempfile
 import pandas as pd
 import numpy as np
 
-from vocus.cli import metadata_integrate
+from tofspec.cli import metadata_integrate
 
 class SetupTestCase(unittest.TestCase):
     def setUp(self):
