@@ -6,7 +6,7 @@ import os
 import shutil, tempfile
 import pandas as pd
 
-from vocus.cli import concat
+from tofspec.cli import concat
 
 
 class SetupTestCase(unittest.TestCase):

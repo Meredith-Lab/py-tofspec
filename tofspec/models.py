@@ -4,8 +4,6 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import h5py
-from regex import P
 import yaml
 import click
 from itertools import chain
@@ -91,10 +89,9 @@ class TOFSpec(object):
         Using the default mass list in the config/mass_list.yml file, create a time series 
         dataframe with a column for every compound in the list
         # """
-        # path_to_mass_list = kwargs.pop('path_to_mass_list', self.path_to_mass_list)
-        # columns = kwargs.pop('columns', 'mf')
-        # compound, ion, self.mf, min, max, center = mass_list_from_dict(read_yaml(path_to_mass_list))
-        ion, _, min, max, _, _ = vocdb_from_dict(self.voc_dict)
+        peak_list = kwargs.pop('peak_list', 'config/voc-db.yml')
+        voc_dict = read_yaml(peak_list)
+        ion, _, min, max, _, _ = vocdb_from_dict(voc_dict)
         self.masses = [list(x) for x in zip(min, max)]
 
         self.time_series_df = self.get_time_series_df(self.masses, names=ion, mass_range=True)
@@ -177,33 +174,3 @@ class TOFSpec(object):
             self.grouped_df[group] = self.time_series_df[groups_smiles_dict[group]['ions']].sum(axis=1)
 
         return self.grouped_df
-
-    # def group_time_series_df(self, **kwargs):
-    #     """
-    #     based on the groups that the user specifies, or by default listed in the config/grouping.yml file,
-    #     sum the time series dataframe to have those groups as columns
-    #     """
-    #     #if user inputs a list of groups
-    #     groups = kwargs.pop('groups', self.groups)
-    #     if set(groups).issubset(self.possible_groups):
-    #         pass
-    #     else:
-    #         groups = self.groups
-
-    #     #get all of the compounds SMILES for each group
-    #     groups_smiles_dict = {}
-    #     for f in groups:
-    #         groups_smiles_dict[f] = {'smiles': [],}
-    #         for compound in self.voc_dict:
-    #             if f in compound['groups']:
-    #                 groups_smiles_dict[f]['smiles'].append(compound['smiles'])
-
-    #     #build grouped dataframe
-    #     self.grouped_df = pd.DataFrame()
-    #     self.grouped_df.index = self.time_series_df.index
-    #     self.grouped_df['metadata'] = self.time_series_df['metadata']
-
-    #     for group in groups_smiles_dict.keys():
-    #         self.grouped_df[group] = self.time_series_df[groups_smiles_dict[group]['smiles']].sum(axis=1)
-
-    #     return self.grouped_df

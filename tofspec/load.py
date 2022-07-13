@@ -1,17 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
 import pandas as pd
 import numpy as np
 import h5py
 from datetime import datetime, timedelta
-import click
 
-from ...exceptions import InvalidFileExtension, InvalidArgument
-
-## methods for wrangling hdf5 file data and compiling into some properties
-def load_data(file):
+## methods for wrangling PTR-TOF-MS Vocus hdf5 file data and compiling into some properties
+def load_vocus_data(file):
     """
     extracts useful data from Vocus hdf5 file.
     :param data: hdf5 filepath

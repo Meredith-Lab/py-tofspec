@@ -6,7 +6,7 @@ import os
 import shutil, tempfile
 import pandas as pd
 
-from vocus.cli import merge
+from tofspec.cli import merge
 
 class SetupTestCase(unittest.TestCase):
     def setUp(self):
