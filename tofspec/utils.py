@@ -36,51 +36,40 @@ def safe_load(fpath, **kwargs):
 
 ## reading YAML config files
 
+def write_yaml(name, data):
+    with open(name, 'w') as f:
+        documents = yaml.dump(data, f, indent=4, default_flow_style=False, sort_keys=False)
+
 def read_yaml(name):
     with open(name) as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
     return data
 
-def mass_list_from_dict(data):
-    compound = []
-    ion = []
-    mf = []
-    min = []
-    max = []
-    center = []
-    for i in data['compounds']:
-        compound.append(i['compound'])
-        ion.append(i['ion'])
-        mf.append(i['mf'])
-        min.append(i['mass-range']['min'])
-        max.append(i['mass-range']['max'])
-        center.append(i['mass-range']['center'])
-    return compound, ion, mf, min, max, center
+def build_peak_list(id, smiles, min, max, **kwargs):
+    name = kwargs.pop('name', None)
+    author = kwargs.pop('author', None)
 
-def vocdb_from_dict(data):
-    ion = []
+    data = {'name':name,
+            'author': author,
+            'peak-list':[{
+                'id': id[i],
+                'smiles': smiles[i],
+                'mass-range':{
+                    'min':min[i],
+                    'max':max[i],
+                }}for i in range(len(smiles))
+                ]}
+    
+    return data
+
+def peak_list_from_dict(data):
+    id = []
     smiles = []
     min = []
     max = []
-    center = []
-    groups = []
-    for i in data['ions']:
-        ion.append(i['ion-name'])
+    for i in data['peak-list']:
+        id.append(i['id'])
         smiles.append(i['smiles'])
         min.append(i['mass-range']['min'])
         max.append(i['mass-range']['max'])
-        center.append(i['mass-range']['center'])
-        groups.append(i['groups'])
-    return ion, smiles, min, max, center, groups
-
-def voc_lists_from_dict(data):
-    name = []
-    formula = []
-    smiles = []
-    groups = []
-    for i in data['compounds']:
-        name.append(i['iupac-name'])
-        formula.append(i['molecular-formula'])
-        smiles.append(i['smiles'])
-        groups.append(i['groups'])
-    return name, formula, smiles, groups
+    return id, smiles, min, max
