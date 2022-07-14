@@ -62,72 +62,72 @@ def get_time_series(tof_data, mass_axis, mass, **kwargs):
 
 
 def get_time_series_df(tof_data, mass_axis, masses, **kwargs):
-        """
-        Using a list of masses or mass range tuples, create a time series 
-        dataframe with a column for every mass in the list. Options to specify
-        column names, supply timestamps and/or metadata.
+    """
+    Using a list of masses or mass range tuples, create a time series 
+    dataframe with a column for every mass in the list. Options to specify
+    column names, supply timestamps and/or metadata.
 
 
-        Inputs
-        ------
-        :param tof_data: matrix of TOF mass spec data. shape = (t,n) where
-                    t = number of snapshots that were taken during the experiment, or in other words the number of 
-                        timesteps (typically seconds) that the experiment was running
-                    n = number of TOF bins that the mass spec is equipped to observe
-        :type tof_data: np.ndarray
-        :param mass_axis: array of m/Q values that characterize the TOF bins of the mass spec
-        :type mass_axis: array-like
-        :param masses: list/array of m/Q values to be integrated over (or m/Q range -- see optional args)
-        :type mass: array-like (floats or tuples)
+    Inputs
+    ------
+    :param tof_data: matrix of TOF mass spec data. shape = (t,n) where
+                t = number of snapshots that were taken during the experiment, or in other words the number of 
+                    timesteps (typically seconds) that the experiment was running
+                n = number of TOF bins that the mass spec is equipped to observe
+    :type tof_data: np.ndarray
+    :param mass_axis: array of m/Q values that characterize the TOF bins of the mass spec
+    :type mass_axis: array-like
+    :param masses: list/array of m/Q values to be integrated over (or m/Q range -- see optional args)
+    :type mass: array-like (floats or tuples)
 
-        Optional Arguments
-        ------------------
-        :param binsize: if mass is a single value, the width of the m/Q integration range. (default = 1)
-        :type binsize: float
-        :param mass_range: if True, then mass should be given as a tuple that gives the lower bound and upper bound
-                            of the integration range. (default = False)
-        :type mass_range: boolean
-        :param names: identifiers for the list of masses provided. could be ions, compounds, or SMILES
-        :type names: array-like
-        :param timestamps: datetimes that match each row of data in tof_data
-        :type timestamps: array-like
-        :param metadata: metadata that match each row of data in tof_data
-        :type metadata: array-like
+    Optional Arguments
+    ------------------
+    :param binsize: if mass is a single value, the width of the m/Q integration range. (default = 1)
+    :type binsize: float
+    :param mass_range: if True, then mass should be given as a tuple that gives the lower bound and upper bound
+                        of the integration range. (default = False)
+    :type mass_range: boolean
+    :param names: identifiers for the list of masses provided. could be ions, compounds, or SMILES
+    :type names: array-like
+    :param timestamps: datetimes that match each row of data in tof_data
+    :type timestamps: array-like
+    :param metadata: metadata that match each row of data in tof_data
+    :type metadata: array-like
 
-        Output
-        ------
-        :return: dataframe of the integrated counts/concentration for the specified m/Q values
-        :rtype: pd.Dataframe
-        """
-        binsize = kwargs.pop('binsize', 1)
-        mass_range = kwargs.pop('mass_range', False)
-        names = kwargs.pop('names', None)
-        timestamps = kwargs.pop('timestamps', None)
-        metadata = kwargs.pop('metadata', None)
+    Output
+    ------
+    :return: dataframe of the integrated counts/concentration for the specified m/Q values
+    :rtype: pd.Dataframe
+    """
+    binsize = kwargs.pop('binsize', 1)
+    mass_range = kwargs.pop('mass_range', False)
+    names = kwargs.pop('names', None)
+    timestamps = kwargs.pop('timestamps', None)
+    metadata = kwargs.pop('metadata', None)
 
-        time_series_masses = []
-        with click.progressbar(masses, label='computing time series data') as bar:
-            for m in bar:
-                time_series_masses.append(get_time_series(tof_data, mass_axis, m, binsize=binsize, mass_range=mass_range))
+    time_series_masses = []
+    with click.progressbar(masses, label='computing time series data') as bar:
+        for m in bar:
+            time_series_masses.append(get_time_series(tof_data, mass_axis, m, binsize=binsize, mass_range=mass_range))
 
-        if names is None:
-            for m in masses:
-                names.append('m{} abundance'.format(m))
+    if names is None:
+        for m in masses:
+            names.append('m{} abundance'.format(m))
 
-        if timestamps is not None:
-            names.insert(0, "timestamp")
-            time_series_masses.insert(0, timestamps)
+    if timestamps is not None:
+        names.insert(0, "timestamp")
+        time_series_masses.insert(0, timestamps)
 
-        time_series_df = pd.DataFrame(dict(zip(names, time_series_masses)))
+    time_series_df = pd.DataFrame(dict(zip(names, time_series_masses)))
 
-        if "timestamp" in time_series_df.columns:
-            time_series_df['timestamp'] = pd.to_datetime(time_series_df['timestamp'])
-            time_series_df = time_series_df.set_index('timestamp', drop=True)
+    if "timestamp" in time_series_df.columns:
+        time_series_df['timestamp'] = pd.to_datetime(time_series_df['timestamp'])
+        time_series_df = time_series_df.set_index('timestamp', drop=True)
 
-        if metadata is not None:
-            time_series_df['metadata'] = metadata
+    if metadata is not None:
+        time_series_df['metadata'] = metadata
 
-        return time_series_df
+    return time_series_df
 
 
 def time_series_df_from_yaml(tof_data, mass_axis, **kwargs):
