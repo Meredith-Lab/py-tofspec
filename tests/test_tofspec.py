@@ -34,28 +34,19 @@ class TestClass(unittest.TestCase):
         assert len(self.metadata) == len(self.timestamps)
 
     def test_config(self):
-        #test config files are correct format
-        #read in mass list and check
-        mass_list_dict = tofspec.utils.read_yaml("tofspec/config/mass_list.yml")
-        self.assertIsInstance(mass_list_dict, dict)
-        compound, ion, mf, min, max, center = tofspec.utils.mass_list_from_dict(mass_list_dict)
-        self.assertIsInstance(compound, list)
-        self.assertIsInstance(compound[0], str)
-        self.assertIsInstance(ion, list)
-        self.assertIsInstance(ion[0], str)
-        self.assertIsInstance(mf, list)
-        self.assertIsInstance(mf[0], str)
+        #test config file is correct format
+        #read in peak-list and check
+        peak_list_dict = tofspec.utils.read_yaml("tofspec/config/peak-list.yml")
+        self.assertIsInstance(peak_list_dict, dict)
+        id, smiles, min, max = tofspec.utils.peak_list_from_dict(peak_list_dict)
+        self.assertIsInstance(id, list)
+        self.assertIsInstance(id[0], str)
+        self.assertIsInstance(smiles, list)
+        self.assertIsInstance(smiles[0], str)
         self.assertIsInstance(min, list)
         self.assertIsInstance(max, list)
-        self.assertIsInstance(center, list)
         
-        self.assertGreater(len(compound), 0)
-
-        #read in voc db and check
-        # self.assertIsInstance(self.single.voc_dict, list)
-
-        #check chosen groups is correct format
-        # self.assertIsInstance(self.single.groups, list)
+        self.assertGreater(len(id), 0)
 
     def test_integration(self):
         #for these two util tests make sure you get the right answer
@@ -77,8 +68,8 @@ class TestClass(unittest.TestCase):
         self.assertIsInstance(user_input_df, pd.DataFrame)
 
         #test time series df with masses from mass list
-        mass_list_df = tofspec.time_series_df_from_yaml(self.tof_data, self.mass_axis, peak_list="/Users/joepalmo/Desktop/NSF_SiTS/tofspec/tofspec/config/voc-db.yml")
-        self.assertIsInstance(mass_list_df, pd.DataFrame)
+        self.mass_list_df = tofspec.time_series_df_from_yaml(self.tof_data, self.mass_axis, peak_list="tofspec/config/peak-list.yml")
+        self.assertIsInstance(self.mass_list_df, pd.DataFrame)
 
         # #test grouping yml file is configured correctly (list of chosen groups)
         # self.assertGreater(len(self.single.groups), 0)
@@ -90,3 +81,12 @@ class TestClass(unittest.TestCase):
         # grouped_columns = list(self.single.grouped_df.columns)
         # grouped_columns.remove('metadata')
         # self.assertEqual(list(self.single.groups), grouped_columns)
+    
+    def test_lookuptable(self):
+        #read in the lookup table
+        fx_df = pd.read_feather("tofspec/db/database.feather")
+        self.assertIsInstance(fx_df, pd.DataFrame)
+
+    def test_label(self):
+        grouped_df = tofspec.group_time_series_df(tofspec.time_series_df_from_yaml(self.tof_data, self.mass_axis, peak_list="tofspec/config/peak-list.yml"), "tofspec/config/peak-list.yml", lookup_table="tofspec/db/database.feather")
+        self.assertIsInstance(grouped_df, pd.DataFrame)

@@ -157,40 +157,53 @@ def time_series_df_from_yaml(tof_data, mass_axis, **kwargs):
     :rtype: pd.Dataframe
 
     """
-    peak_list = kwargs.pop('peak_list', 'config/voc-db.yml')
+    peak_list = kwargs.pop('peak_list', 'config/peak-list.yml')
     voc_dict = read_yaml(peak_list)
-    ion, _, min, max, _, _ = vocdb_from_dict(voc_dict)
+    id, smiles, min, max = peak_list_from_dict(voc_dict)
     masses = [list(x) for x in zip(min, max)]
 
-    time_series_df = get_time_series_df(tof_data, mass_axis, masses, names=ion, mass_range=True)
+    time_series_df = get_time_series_df(tof_data, mass_axis, masses, names=smiles, mass_range=True)
     
     time_series_df = time_series_df.sort_index()
 
     return time_series_df
 
-def group_time_series_df(time_series_df, voc_dict, **kwargs):
+
+def group_time_series_df(time_series_df, peak_list, **kwargs):
     """
     Based on the groups listed in the config/voc-db.yml file,
     sum the time series dataframe to have those groups as columns
     """
-    ion, smiles, min, max, center, groups = vocdb_from_dict(voc_dict)
+    #path to lookup table
+    lookup_table = kwargs.pop('lookup_table', 'db/database.feather')
 
-    group_list = set(chain(*groups))
+    #load peak list
+    id, smiles, min, max = peak_list_from_dict(read_yaml(peak_list))
+
+    #load functional group lookup table
+    fx_df = pd.read_feather(lookup_table)
+    group_list = list(fx_df.columns)
+    group_list.remove('mf')
+    group_list.remove('smiles')
+
+    subset_df = fx_df.loc[fx_df['smiles'].isin(smiles)]
 
     #get all of the compounds in each group
     groups_smiles_dict = {}
-    for f in group_list:
-        groups_smiles_dict[f] = {'ions': [],}
-        for ion in voc_dict['ions']:
-            if f in ion['groups']:
-                groups_smiles_dict[f]['ions'].append(ion['ion-name'])
+    for g in group_list:
+        subset_g = subset_df.loc[subset_df[g] == 1]['smiles'].to_list()
+        groups_smiles_dict[g] = {'smiles': subset_g,}
+        # for s in smiles:
+        #     #if the smiles row in lookup table has a 1 in the fx group column
+        #     if fx_df.loc[fx_df['smiles'] == s][f].any():
+        #         groups_smiles_dict[f]['smiles'].append(s)
 
     #build grouped dataframe
     grouped_df = pd.DataFrame()
     grouped_df.index = time_series_df.index
-    grouped_df['metadata'] = time_series_df['metadata']
+    # grouped_df['metadata'] = time_series_df['metadata']
 
     for group in groups_smiles_dict.keys():
-        grouped_df[group] = time_series_df[groups_smiles_dict[group]['ions']].sum(axis=1)
+        grouped_df[group] = time_series_df[groups_smiles_dict[group]['smiles']].sum(axis=1)
 
     return grouped_df
