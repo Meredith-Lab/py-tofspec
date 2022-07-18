@@ -186,6 +186,7 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
     group_list.remove('mf')
     group_list.remove('smiles')
 
+    #isolate only the columns which are in time_series_df
     subset_df = fx_df.loc[fx_df['smiles'].isin(smiles)]
 
     #get all of the compounds in each group
@@ -193,10 +194,6 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
     for g in group_list:
         subset_g = subset_df.loc[subset_df[g] == 1]['smiles'].to_list()
         groups_smiles_dict[g] = {'smiles': subset_g,}
-        # for s in smiles:
-        #     #if the smiles row in lookup table has a 1 in the fx group column
-        #     if fx_df.loc[fx_df['smiles'] == s][f].any():
-        #         groups_smiles_dict[f]['smiles'].append(s)
 
     #build grouped dataframe
     grouped_df = pd.DataFrame()
