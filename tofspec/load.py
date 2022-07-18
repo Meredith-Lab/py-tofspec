@@ -7,19 +7,25 @@ import h5py
 from datetime import datetime, timedelta
 
 ## methods for wrangling PTR-TOF-MS Vocus hdf5 file data and compiling into some properties
-def load_vocus_data(file):
+def load_vocus_data(file, **kwargs):
     """
     extracts useful data from Vocus hdf5 file.
     :param file: hdf5 filepath
     :type file: str
     """
+    metadata_ = kwargs.pop('metadata', False)
+
     with h5py.File(file, "r") as f:
         timestamps = get_times(f)
         mass_axis = get_mass_axis(f)
         tof_data = get_tof_data(f, len(timestamps), len(mass_axis))
-        metadata = get_metadata(f)
-
-    return timestamps, mass_axis, tof_data, metadata
+        if metadata_:
+            metadata = get_metadata(f)
+            
+    if metadata_:
+        return timestamps, mass_axis, tof_data, metadata
+    else:
+        return timestamps, mass_axis, tof_data
 
 def get_times(f):
     """

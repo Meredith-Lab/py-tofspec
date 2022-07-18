@@ -25,6 +25,22 @@ def concat(files, output, **kwargs):
 
     concat_command(files, output, **kwargs)
 
+#add load command
+@click.command("load", short_help="parse raw mass spec data files")
+@click.argument("file", nargs=1, type=click.Path())
+@click.option("-i", "--instrument", default="vocus", help="The instrument that FILE comes from", type=str)
+@click.option("-f", "--format", default="h5", help="The format/file extension of FILE", type=str)
+@click.option("-m", "--metadata", is_flag=True, default=False, help="Does the file include metadata?")
+@click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
+def load(file, output, **kwargs):
+    """Parse FILE and save relevant data to OUTPUT.
+    Read TOF data matrix from FILE. The structure of FILE is determined by the 
+    optional --instrument and --format arguments. Currently, only 'vocus' and 'h5' are accepted.
+    """
+    from .commands.load import load_command
+
+    load_command(file, output, **kwargs)
+
 #add timeseries command
 @click.command("timeseries", short_help="build a time series from vocus files")
 @click.argument("datapath", nargs=1, type=click.Path())

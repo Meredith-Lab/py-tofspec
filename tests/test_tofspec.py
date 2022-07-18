@@ -17,7 +17,7 @@ long_data = "tests/datafiles/V3_5min.h5"
 class TestClass(unittest.TestCase):
 
     def setUp(self):
-        self.timestamps, self.mass_axis, self.tof_data, self.metadata = tofspec.load_vocus_data(short_data)
+        self.timestamps, self.mass_axis, self.tof_data, self.metadata = tofspec.load_vocus_data(short_data, metadata=True)
 
     def test_version(self):
         assert __version__ == '0.1.0'
