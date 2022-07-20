@@ -106,9 +106,8 @@ def get_time_series_df(tof_data, mass_axis, masses, **kwargs):
     metadata = kwargs.pop('metadata', None)
 
     time_series_masses = []
-    with click.progressbar(masses, label='computing time series data') as bar:
-        for m in bar:
-            time_series_masses.append(get_time_series(tof_data, mass_axis, m, binsize=binsize, mass_range=mass_range))
+    for m in masses:
+        time_series_masses.append(get_time_series(tof_data, mass_axis, m, binsize=binsize, mass_range=mass_range))
 
     if names is None:
         for m in masses:
@@ -150,6 +149,10 @@ def time_series_df_from_yaml(tof_data, mass_axis, **kwargs):
     ------------------
     :param peak_list: path to configuration yml file
     :type peak_list: str
+    :param timestamps: array of datetimes that match the moments of observation
+    :type timestamps: array-like
+    :param metadata: array of metadata that match the observations
+    :type metadata: array-like
 
     Output
     ------
@@ -157,12 +160,14 @@ def time_series_df_from_yaml(tof_data, mass_axis, **kwargs):
     :rtype: pd.Dataframe
 
     """
+    timestamps = kwargs.pop('timestamps', None)
+    metadata = kwargs.pop('metadata', None)
     peak_list = kwargs.pop('peak_list', 'config/peak-list.yml')
     voc_dict = read_yaml(peak_list)
     id, smiles, min, max = peak_list_from_dict(voc_dict)
     masses = [list(x) for x in zip(min, max)]
 
-    time_series_df = get_time_series_df(tof_data, mass_axis, masses, names=smiles, mass_range=True)
+    time_series_df = get_time_series_df(tof_data, mass_axis, masses, names=smiles, mass_range=True, timestamps=timestamps, metadata=metadata)
     
     time_series_df = time_series_df.sort_index()
 

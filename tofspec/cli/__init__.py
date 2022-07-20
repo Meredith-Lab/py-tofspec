@@ -41,6 +41,22 @@ def load(file, output, **kwargs):
 
     load_command(file, output, **kwargs)
 
+#add integrate peaks command
+@click.command("integrate-peaks", short_help="integrate ion peaks in raw mass spec data")
+@click.argument("file", nargs=1, type=click.Path())
+@click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
+@click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
+@click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
+@click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
+def integrate_peaks(file, output, **kwargs):
+    """Convert FILE, a matrix of raw PTR-TOF-MS data (TOF bins X timestamps) to a time series of
+         integrated ion counts/concentrations for ions specified in the peak list (CONFIG).
+    """
+    from .commands.integrate_peaks import integrate_peaks_command
+
+    integrate_peaks_command(file, output, **kwargs)
+
+
 #add timeseries command
 @click.command("timeseries", short_help="build a time series from vocus files")
 @click.argument("datapath", nargs=1, type=click.Path())

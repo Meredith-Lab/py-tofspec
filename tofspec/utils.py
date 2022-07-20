@@ -20,12 +20,19 @@ def safe_load(fpath, **kwargs):
     else:
         raise InvalidFileExtension
 
-    tmp = pd.read_csv(fpath, nrows=1, header=None) if as_csv else pd.read_feather(fpath)
+    sample = pd.read_csv(fpath, nrows=1) if as_csv else pd.read_feather(fpath)
+    dtypes = sample.dtypes # Get the dtypes
+    cols = sample.columns # Get the columns
 
-    if tmp.iloc[0, 0] == "deviceModel": # hack to deal with PID data format
-        tmp = pd.read_csv(fpath, skiprows=3) if as_csv else pd.read_feather(fpath, skiprows=3)
-    else:
-        tmp = pd.read_csv(fpath) if as_csv else pd.read_feather(fpath)
+    dtype_dictionary = {} 
+    for c in cols:
+        if str(dtypes[c]) == 'float64':
+            dtype_dictionary[c] = 'float32'
+        else:
+            dtype_dictionary[c] = str(dtypes[c])
+
+    tmp = pd.read_csv(fpath, dtype=dtype_dictionary) if as_csv else pd.read_feather(fpath)
+    
 
     # drop the extra column if it was added
     if "Unnamed: 0" in tmp.columns:

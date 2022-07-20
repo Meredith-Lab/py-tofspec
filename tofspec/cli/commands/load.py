@@ -31,13 +31,13 @@ def load_command(file, output, **kwargs):
         timestamps, mass_axis, tof_data, metadata = load_vocus_data(file, metadata=metadata_)
         #assemble dataframe format
         df = pd.DataFrame(tof_data, columns=mass_axis)
-        df['timestamps'] = timestamps
+        df['timestamp'] = timestamps
         df['metadata'] = metadata
     else:
         timestamps, mass_axis, tof_data = load_vocus_data(file, metadata=metadata_)
         #assemble dataframe format
         df = pd.DataFrame(tof_data, index=pd.DatetimeIndex(timestamps), columns=mass_axis)
-        df['timestamps'] = timestamps
+        df['timestamp'] = timestamps
 
     # save the file
     click.secho("Saving file to {}".format(output), fg='green')
