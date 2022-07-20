@@ -20,7 +20,10 @@ def find_indices(x, xlower, xupper):
     limits = np.array([xlower, xupper])
     indices = np.searchsorted(x, limits)
 
-    candidates = x[np.stack((indices - 1, indices), axis=0)]
+    try:
+        candidates = x[np.stack((indices - 1, indices), axis=0)]
+    except:
+        return [0,0]
     indices += np.abs(candidates - limits).argmin(axis=0) - 1
 
     return indices
