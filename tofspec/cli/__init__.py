@@ -25,6 +25,18 @@ def concat(files, output, **kwargs):
 
     concat_command(files, output, **kwargs)
 
+@click.command("merge", short_help="merge two files together on their timestamp")
+@click.argument("files", nargs=-1, type=click.Path())
+@click.option("-ts", "--tscol", default="timestamp", help="The column by which to join the files", type=str)
+@click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose mode (debugging)")
+def merge(files, tscol, output, verbose, **kwargs):
+    """Merge FILES together and save to OUTPUT.
+    """
+    from .commands.merge import merge_command
+
+    merge_command(files, output, tscol=tscol, verbose=verbose, **kwargs)
+
 #add load command
 @click.command("load", short_help="parse raw mass spec data files")
 @click.argument("file", nargs=1, type=click.Path())
