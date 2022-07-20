@@ -56,45 +56,35 @@ def integrate_peaks(file, output, **kwargs):
 
     integrate_peaks_command(file, output, **kwargs)
 
-
-#add timeseries command
-@click.command("timeseries", short_help="build a time series from vocus files")
-@click.argument("datapath", nargs=1, type=click.Path())
-@click.option("-y", "--yaml", default="vocus/config/mass_list.yml", help="YAML file compound list used to build the time series", type=click.Path())
-@click.option("-o", "--output", default="output.csv", help="output filepath (must be .csv or .feather)", type=str)
-@click.option("-c", "--columns", default="mf", help="column names in output dataframe (compound, mf, ion)", type=str)
-def timeseries(datapath, yaml, output, columns, **kwargs):
-    """Load and compute timeseries for Vocus .h5 file(s)
+@click.command("label", short_help="sum compounds counts/concentrations by substructure")
+@click.argument("file", nargs=1, type=click.Path())
+@click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
+@click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
+@click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
+@click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
+def label(file, output, **kwargs):
+    """Convert FILE, a matrix of compound counts/concentrations, to a time series of integrated
+        substructure/functional group concentrations. For more info on how to choose different substructures...
     """
-    from .commands.time_series import time_series_command
+    from .commands.label import label_command
 
-    time_series_command(datapath, output, columns=columns, path_to_mass_list=yaml, **kwargs)
+    label_command(file, output, **kwargs)
 
-#add metadata integration command
-@click.command("metadata_integrate", short_help="integrate time series data for each sampling run")
-@click.argument("datapath", nargs=1, type=click.Path())
-@click.option("-o", "--output", default="output.csv", help="output filepath (must be .csv or .feather)", type=str)
-def metadata_integrate(datapath, output, **kwargs):
-    """Use the metadata to integrate/downsample time series data for each sampling run
-    """
-    from .commands.metadata_integration import metadata_integration_command
 
-    metadata_integration_command(datapath, output)  
+# #add merge integration command
+# @click.command("merge", short_help="merge time series data")
+# @click.argument("files", nargs=-1, type=click.Path())
+# @click.option("-o", "--output", default="output.csv", help="output filepath (must be .csv or .feather)", type=str)
+# def merge(files, output, **kwargs):
+#     """Merge time series .csv files along their timestamp axis
+#     """
+#     from .commands.merge import merge_command
 
-#add merge integration command
-@click.command("merge", short_help="merge time series data")
-@click.argument("files", nargs=-1, type=click.Path())
-@click.option("-o", "--output", default="output.csv", help="output filepath (must be .csv or .feather)", type=str)
-def merge(files, output, **kwargs):
-    """Merge time series .csv files along their timestamp axis
-    """
-    from .commands.merge import merge_command
-
-    merge_command(files, output)  
+#     merge_command(files, output)  
 
 
 #add all commands
 main.add_command(concat)
-main.add_command(timeseries)
-main.add_command(metadata_integrate)
-main.add_command(merge)
+main.add_command(load)
+main.add_command(integrate_peaks)
+main.add_command(label)
