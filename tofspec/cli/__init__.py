@@ -3,7 +3,7 @@ import pkg_resources
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-__version__ = pkg_resources.get_distribution('vocus').version
+__version__ = pkg_resources.get_distribution('py-tofspec').version
 
 #set up cli tool
 @click.group(context_settings=CONTEXT_SETTINGS)
