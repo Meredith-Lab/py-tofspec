@@ -52,14 +52,14 @@ def read_yaml(name):
         data = yaml.load(f, Loader=yaml.SafeLoader)
     return data
 
-def build_peak_list(id, smiles, min, max, **kwargs):
+def build_peak_list(mf, smiles, min, max, **kwargs):
     name = kwargs.pop('name', None)
     author = kwargs.pop('author', None)
 
     data = {'name':name,
             'author': author,
             'peak-list':[{
-                'id': id[i],
+                'mf': mf[i],
                 'smiles': smiles[i],
                 'mass-range':{
                     'min':min[i],
@@ -70,13 +70,13 @@ def build_peak_list(id, smiles, min, max, **kwargs):
     return data
 
 def peak_list_from_dict(data):
-    id = []
+    mf = []
     smiles = []
     min = []
     max = []
     for i in data['peak-list']:
-        id.append(i['id'])
+        mf.append(i['mf'])
         smiles.append(i['smiles'])
         min.append(i['mass-range']['min'])
         max.append(i['mass-range']['max'])
-    return id, smiles, min, max
+    return mf, smiles, min, max
