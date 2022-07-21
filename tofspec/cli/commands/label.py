@@ -15,6 +15,7 @@ from ...exceptions import InvalidFileExtension, InvalidArgument
 def label_command(file, output, **kwargs):
     tscol = kwargs.pop('tscol', None)
     ignore = kwargs.pop('ignore', None)
+    columns = kwargs.pop('columns', 'smiles')
 
     config = kwargs.pop('config', 'tofspec/config/peak-list.yml')
     peak_list = Path(config)
@@ -30,7 +31,7 @@ def label_command(file, output, **kwargs):
 
     df = safe_load(file)
 
-    label_df = group_time_series_df(df, config, lookup_table='tofspec/db/database.feather')
+    label_df = group_time_series_df(df, config, lookup_table='tofspec/db/database.feather', columns=columns)
 
     if tscol is not None:
         label_df[tscol] = pd.to_datetime(df[tscol])

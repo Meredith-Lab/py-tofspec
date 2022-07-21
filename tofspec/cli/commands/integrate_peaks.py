@@ -13,13 +13,12 @@ from ...exceptions import InvalidFileExtension, InvalidArgument
 def integrate_peaks_command(file, output, **kwargs):
     tscol = kwargs.pop('tscol', None)
     ignore = kwargs.pop('ignore', None)
+    columns = kwargs.pop('columns', 'smiles')
 
     config = kwargs.pop('config', 'tofspec/config/peak-list.yml')
     peak_list = Path(config)
     if peak_list.suffix not in (".yml", ".yaml"):
         raise InvalidFileExtension("Invalid YAML file extension")
-
-    columns = kwargs.pop('columns', 'smiles')
 
     # make sure the extension is either a csv or feather format
     output = Path(output)
@@ -46,7 +45,7 @@ def integrate_peaks_command(file, output, **kwargs):
 
     tof_data = df.to_numpy(dtype=np.float32)
 
-    compound_df = time_series_df_from_yaml(tof_data, mass_axis, peak_list=config, timestamps=timestamps, metadata=metadata)
+    compound_df = time_series_df_from_yaml(tof_data, mass_axis, peak_list=config, columns=columns, timestamps=timestamps, metadata=metadata)
 
     # save the file
     click.secho("Saving file to {}".format(output), fg='green')

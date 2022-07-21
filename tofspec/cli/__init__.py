@@ -59,6 +59,7 @@ def load(file, output, **kwargs):
 @click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
 @click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
 @click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
+@click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of FILE")
 @click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
 def integrate_peaks(file, output, **kwargs):
     """Convert FILE, a matrix of raw PTR-TOF-MS data (TOF bins X timestamps) to a time series of
@@ -73,6 +74,7 @@ def integrate_peaks(file, output, **kwargs):
 @click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
 @click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
 @click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
+@click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of FILE")
 @click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
 def label(file, output, **kwargs):
     """Convert FILE, a matrix of compound counts/concentrations, to a time series of integrated

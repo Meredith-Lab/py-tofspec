@@ -48,6 +48,7 @@ class SetupTestCase(unittest.TestCase):
                         os.path.join(self.test_dir, "output.feather"),
                         "-ts",
                         "timestamp",
+                        "-col=mf",
                         os.path.join(self.test_files_dir, "test.csv"),
                     ]
                 )
