@@ -38,15 +38,15 @@ class TestClass(unittest.TestCase):
         #read in peak-list and check
         peak_list_dict = tofspec.utils.read_yaml("tofspec/config/peak-list.yml")
         self.assertIsInstance(peak_list_dict, dict)
-        id, smiles, min, max = tofspec.utils.peak_list_from_dict(peak_list_dict)
-        self.assertIsInstance(id, list)
-        self.assertIsInstance(id[0], str)
+        mf, smiles, min, max = tofspec.utils.peak_list_from_dict(peak_list_dict)
+        self.assertIsInstance(mf, list)
+        self.assertIsInstance(mf[0], str)
         self.assertIsInstance(smiles, list)
         self.assertIsInstance(smiles[0], str)
         self.assertIsInstance(min, list)
         self.assertIsInstance(max, list)
         
-        self.assertGreater(len(id), 0)
+        self.assertGreater(len(mf), 0)
 
     def test_integration(self):
         #for these two util tests make sure you get the right answer

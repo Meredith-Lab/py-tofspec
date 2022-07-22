@@ -37,6 +37,23 @@ def merge(files, tscol, output, verbose, **kwargs):
 
     merge_command(files, output, tscol=tscol, verbose=verbose, **kwargs)
 
+#add config command
+@click.command("config", short_help="build peak list from .csv")
+@click.argument("file", nargs=1, type=click.Path())
+@click.option("-s", "--smiles", is_flag=True, default=False, help="Does FILE have a smiles column?")
+@click.option("-ion", "--ion", is_flag=True, default=False, help="Does FILE have an ion column instead of a mf column?")
+@click.option("-n", "--name", default=None, help="name for the peak list", type=str)
+@click.option("-a", "--author", default=None, help="author of the peak list", type=str)
+@click.option("-o", "--output", default="output.yaml", help="The filepath where you would like to save the peak list", type=str)
+def config(file, output, **kwargs):
+    """Use FILE to construct a peak list configuration .yaml file that will be used to integrate peaks
+    and label / group data.
+    """
+    from .commands.config import config_command
+
+    config_command(file, output, **kwargs)
+
+
 #add load command
 @click.command("load", short_help="parse raw mass spec data files")
 @click.argument("file", nargs=1, type=click.Path())
@@ -59,6 +76,7 @@ def load(file, output, **kwargs):
 @click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
 @click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
 @click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
+@click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of FILE")
 @click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
 def integrate_peaks(file, output, **kwargs):
     """Convert FILE, a matrix of raw PTR-TOF-MS data (TOF bins X timestamps) to a time series of
@@ -73,6 +91,7 @@ def integrate_peaks(file, output, **kwargs):
 @click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
 @click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
 @click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
+@click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of FILE")
 @click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
 def label(file, output, **kwargs):
     """Convert FILE, a matrix of compound counts/concentrations, to a time series of integrated
@@ -83,20 +102,10 @@ def label(file, output, **kwargs):
     label_command(file, output, **kwargs)
 
 
-# #add merge integration command
-# @click.command("merge", short_help="merge time series data")
-# @click.argument("files", nargs=-1, type=click.Path())
-# @click.option("-o", "--output", default="output.csv", help="output filepath (must be .csv or .feather)", type=str)
-# def merge(files, output, **kwargs):
-#     """Merge time series .csv files along their timestamp axis
-#     """
-#     from .commands.merge import merge_command
-
-#     merge_command(files, output)  
-
-
 #add all commands
 main.add_command(concat)
+main.add_command(merge)
+main.add_command(config)
 main.add_command(load)
 main.add_command(integrate_peaks)
 main.add_command(label)

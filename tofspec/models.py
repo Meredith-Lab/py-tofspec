@@ -163,11 +163,16 @@ def time_series_df_from_yaml(tof_data, mass_axis, **kwargs):
     timestamps = kwargs.pop('timestamps', None)
     metadata = kwargs.pop('metadata', None)
     peak_list = kwargs.pop('peak_list', 'config/peak-list.yml')
+    columns = kwargs.pop('columns', 'smiles')
     voc_dict = read_yaml(peak_list)
-    id, smiles, min, max = peak_list_from_dict(voc_dict)
+    mf, smiles, min, max = peak_list_from_dict(voc_dict)
+    if columns == 'mf':
+        cols = mf
+    else:
+        cols = smiles
     masses = [list(x) for x in zip(min, max)]
 
-    time_series_df = get_time_series_df(tof_data, mass_axis, masses, names=smiles, mass_range=True, timestamps=timestamps, metadata=metadata)
+    time_series_df = get_time_series_df(tof_data, mass_axis, masses, names=cols, mass_range=True, timestamps=timestamps, metadata=metadata)
     
     time_series_df = time_series_df.sort_index()
 
@@ -181,9 +186,15 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
     """
     #path to lookup table
     lookup_table = kwargs.pop('lookup_table', 'db/database.feather')
+    #method -- either use smiles or mf to do the integration
+    columns = kwargs.pop('columns', 'smiles')
+    if columns in ['mf', 'smiles']:
+        pass
+    else: 
+        Exception("Only `mf` and `smiles` are accepted inputs for columns")
 
     #load peak list
-    id, smiles, min, max = peak_list_from_dict(read_yaml(peak_list))
+    mf, smiles, min, max = peak_list_from_dict(read_yaml(peak_list))
 
     #load functional group lookup table
     fx_df = pd.read_feather(lookup_table)
@@ -192,13 +203,16 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
     group_list.remove('smiles')
 
     #isolate only the columns which are in time_series_df
-    subset_df = fx_df.loc[fx_df['smiles'].isin(smiles)]
+    if columns == 'mf':
+        subset_df = fx_df.loc[fx_df[columns].isin(mf)]
+    else:
+        subset_df = fx_df.loc[fx_df[columns].isin(smiles)]
 
     #get all of the compounds in each group
-    groups_smiles_dict = {}
+    groups_smiles_dict = {} 
     for g in group_list:
-        subset_g = subset_df.loc[subset_df[g] == 1]['smiles'].to_list()
-        groups_smiles_dict[g] = {'smiles': subset_g,}
+        subset_g = subset_df.loc[subset_df[g] == 1][columns].to_list()
+        groups_smiles_dict[g] = {columns: list(set(subset_g)),}
 
     #build grouped dataframe
     grouped_df = pd.DataFrame()
@@ -206,6 +220,6 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
     # grouped_df['metadata'] = time_series_df['metadata']
 
     for group in groups_smiles_dict.keys():
-        grouped_df[group] = time_series_df[groups_smiles_dict[group]['smiles']].sum(axis=1)
+        grouped_df[group] = time_series_df[groups_smiles_dict[group][columns]].sum(axis=1)
 
     return grouped_df
