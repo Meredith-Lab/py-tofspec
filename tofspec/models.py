@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import yaml
-import click
+import rich_click as click
 from itertools import chain
 
 from .integrate import *
