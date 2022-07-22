@@ -182,7 +182,26 @@ def time_series_df_from_yaml(tof_data, mass_axis, **kwargs):
 def group_time_series_df(time_series_df, peak_list, **kwargs):
     """
     Based on the groups listed in the config/voc-db.yml file,
-    sum the time series dataframe to have those groups as columns
+    sum the time series dataframe to have those groups as columns.
+
+    Inputs
+    ------
+    :param time_series_df: dataframe of the integrated counts/concentration for the specified m/Q values
+    :type time_series_df: pd.Dataframe
+    :param peak_list: path to configuration yml file
+    :type peak_list: str
+
+    Optional Arguments
+    ------------------
+    :param lookup_table: path to SMILES / functional groups lookup table
+    :type lookup_table: str
+    :param columns: the column names can either be SMILES strings ('smiles') or molecular formulas ('mf') 
+                    of different compounds. default = 'smiles'
+
+    Output
+    ------
+    :return: dataframe of the integrated counts/concentration for the specified functional groups
+    :rtype: pd.Dataframe
     """
     #path to lookup table
     lookup_table = kwargs.pop('lookup_table', 'db/database.feather')
@@ -191,7 +210,7 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
     if columns in ['mf', 'smiles']:
         pass
     else: 
-        Exception("Only `mf` and `smiles` are accepted inputs for columns")
+        raise Exception("Only `mf` and `smiles` are accepted inputs for columns")
 
     #load peak list
     mf, smiles, min, max = peak_list_from_dict(read_yaml(peak_list))
