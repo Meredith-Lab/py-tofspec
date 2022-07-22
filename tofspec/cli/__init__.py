@@ -37,6 +37,23 @@ def merge(files, tscol, output, verbose, **kwargs):
 
     merge_command(files, output, tscol=tscol, verbose=verbose, **kwargs)
 
+#add config command
+@click.command("config", short_help="build peak list from .csv")
+@click.argument("file", nargs=1, type=click.Path())
+@click.option("-s", "--smiles", is_flag=True, default=False, help="Does FILE have a smiles column?")
+@click.option("-ion", "--ion", is_flag=True, default=False, help="Does FILE have an ion column instead of a mf column?")
+@click.option("-n", "--name", default=None, help="name for the peak list", type=str)
+@click.option("-a", "--author", default=None, help="author of the peak list", type=str)
+@click.option("-o", "--output", default="output.yaml", help="The filepath where you would like to save the peak list", type=str)
+def config(file, output, **kwargs):
+    """Use FILE to construct a peak list configuration .yaml file that will be used to integrate peaks
+    and label / group data.
+    """
+    from .commands.config import config_command
+
+    config_command(file, output, **kwargs)
+
+
 #add load command
 @click.command("load", short_help="parse raw mass spec data files")
 @click.argument("file", nargs=1, type=click.Path())
@@ -88,6 +105,7 @@ def label(file, output, **kwargs):
 #add all commands
 main.add_command(concat)
 main.add_command(merge)
+main.add_command(config)
 main.add_command(load)
 main.add_command(integrate_peaks)
 main.add_command(label)

@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import yaml
+import re
 from pathlib import Path
 
 from .exceptions import InvalidFileExtension
@@ -80,3 +81,37 @@ def peak_list_from_dict(data):
         min.append(i['mass-range']['min'])
         max.append(i['mass-range']['max'])
     return mf, smiles, min, max
+
+def deionize_regex(ion):
+    """Remove a hydrogen and deionize a molecular formula using regex
+    """
+    #make uppercase
+    ion = ion.upper()
+
+    # check if H is in the formula
+    # if so, subtract one H from the formula after deionizing
+    if 'H' in ion:
+        # remove +/- to deionize formula
+        clean_mf = re.sub(r'[^\w]', '', ion)
+        try:
+            # get the number of Hs in the ion formula
+            num_Hs = re.search('H(\d+)', ion, re.IGNORECASE).group(1)
+            # subtract 1 H
+            deionized_Hs = int(num_Hs)-1
+            # if there is a single H left remove the subscript number
+            if deionized_Hs == 1:
+                replacement = 'H'
+            # if there are more than a single H left, replace the subscript number
+            else:
+                replacement = 'H'+str(deionized_Hs)
+            deionized_mf = re.sub('H'+num_Hs, replacement, clean_mf)
+            return deionized_mf
+        # the try statement will fail if there is a single H in the ion formula
+        # this exception deals with removing that single H
+        except:
+            deionized_mf = re.sub('H', '', clean_mf)
+            return deionized_mf
+    else:
+        # remove +/- to deionize formula
+        clean_mf = re.sub(r'[^\w]', '', ion)
+        return clean_mf
