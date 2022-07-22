@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import h5py
-import click
+import rich_click as click
 
 from ...exceptions import InvalidFileExtension, InvalidArgument
 from ...load import *

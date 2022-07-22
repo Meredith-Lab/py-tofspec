@@ -4,7 +4,7 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
-import click
+import rich_click as click
 
 from tofspec.models import group_time_series_df
 
