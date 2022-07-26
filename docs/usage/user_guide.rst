@@ -39,6 +39,7 @@ Overview of Commands
 
     config
     load
+    integrate-peaks
 
 
 .. raw:: html

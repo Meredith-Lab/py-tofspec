@@ -14,7 +14,7 @@ translate it to the .csv or .feather format supported by this package:
    :header-rows: 1
    :stub-columns: 0
 
-   * - (optional)
+   * -
      - m/z bin 1
      - m/z bin 2
      - ...
