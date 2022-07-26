@@ -41,6 +41,7 @@ release = version
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx_togglebutton',
     'sphinx_click.ext',
     'sphinx.ext.intersphinx',
     "sphinx_copybutton",

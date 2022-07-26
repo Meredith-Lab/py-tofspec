@@ -44,6 +44,11 @@ is chosen, then functional groups corresponding to all of the isomers within our
 functional groups for the single isomer denoted by the SMILES string are used. As always, specify your
 output path with ``-o, --output``.
 
+.. admonition:: Note on Molecular Identifiers
+
+  To read more about molecular formula vs SMILES in this context, see `more <../notes/isomers.html>`_.
+
+
 .. raw:: html
 
     <embed>
