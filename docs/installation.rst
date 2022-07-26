@@ -1,5 +1,10 @@
 Installation
 ============
+.. raw:: html
+
+    <embed>
+        <hr>
+    </embed>
 
 Install the plugin using `pip`:
 

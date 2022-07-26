@@ -5,15 +5,25 @@
 
 py-tofspec
 ======================================
+.. raw:: html
 
-**py-tofspec** provides a command line interface and python package for analyzing and labeling PTR-TOF-MS 
-datasets.
+    <embed>
+        <hr>
+    </embed>
+
+:code:`py-tofspec` provides a command line interface and python package for analyzing and labeling proton transfer
+reaction time-of-flight mass spectrometry (PTR-TOF-MS) datasets. 
+
+There already exist many instrument specific software tools that locate peaks in a mass spectrum. Hence, as 
+its inputs :code:`py-tofspec` takes a peak list alongside raw PTR-TOF-MS data and performs automated time series
+generation and chemical speciation of compounds.
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
    installation
-   usage
-   contributing
-   api
+   usage/user_guide
+   contributing/contributing
+   api/index
+   notes/index
