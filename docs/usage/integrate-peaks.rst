@@ -46,10 +46,10 @@ formula (``-col=mf``) or SMILES (``-col=smiles``). As always, specify your outpu
         <hr>
     </embed>
 
-Below is an example command where `raw_data.csv`, is integrated based on the peaks specified in
-`my_peak_list.yml` and saved to `integrated_data.csv`.  
+Below is an example command where **raw_data.csv**, is integrated based on the peaks specified in
+**my_peak_list.yml** and saved to **integrated_data.csv**.  
 
-`raw_data.csv` has a timestamp column named 'Time', and `integrated_data.csv` will have columns
+**raw_data.csv** has a timestamp column named 'Time', and **integrated_data.csv** will have columns
 denoted by molecular formula.
 
 .. code-block:: shell

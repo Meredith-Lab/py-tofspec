@@ -37,8 +37,8 @@ produced by TOFWERK. If you have raw data from a different mass spec that you wo
 we encourage you to write a loader and submit a pull request according to the guidelines laid out on the 
 `Contribution <../contributing/contributing.html>`_ page.
 
-Below is an example command where the raw data from `V1_20XX-XX-XX.h5`, a Vocus file, is parsed into a 
-.csv format and saved to `raw_data.csv`.
+Below is an example command where the raw data from **V1_20XX-XX-XX.h5**, a Vocus file, is parsed into a 
+.csv format and saved to **raw_data.csv**.
 
 .. code-block:: shell
 

@@ -50,10 +50,10 @@ output path with ``-o, --output``.
         <hr>
     </embed>
 
-Below is an example command where `integrated_data.csv`, is labeled / integrated by functional group
-and saved to `labeled_data.csv`.  
+Below is an example command where **integrated_data.csv**, is labeled / integrated by functional group
+and saved to **labeled_data.csv**.  
 
-`integrated_data.csv` has a timestamp column named 'Time', and columns denoted by molecular formula.
+**integrated_data.csv** has a timestamp column named 'Time', and columns denoted by molecular formula.
 
 .. code-block:: shell
 

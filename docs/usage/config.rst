@@ -64,8 +64,8 @@ user must provide a .csv (or .feather) FILE in any of the 3 following formats:
 
 Also ``name`` and ``author`` can be passed directly to the config command using the ``--name`` and ``--author`` options.
 
-Below is an example command where `ion_peaks.csv`, a file in the format of #1 above, is transformed into a YAML peak
-list saved to `my_peak_list.yml`.
+Below is an example command where **ion_peaks.csv**, a file in the format of #1 above, is transformed into a YAML peak
+list saved to **my_peak_list.yml**.
 
 .. code-block:: shell
 
