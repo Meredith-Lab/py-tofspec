@@ -38,6 +38,7 @@ Overview of Commands
     :maxdepth: 1
 
     config
+    load
 
 
 .. raw:: html
