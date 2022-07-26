@@ -13,6 +13,12 @@ single file for easier analysis. The only required argument is the file(s) to me
 you can override the name of the timestamp column (``-ts, --tscol``) as well as define the output file 
 destination (``-o, --output``).
 
+.. raw:: html
+
+    <embed>
+        <hr>
+    </embed>
+
 To merge together two files with the timestamp column 'Time' and define your own output destination:
 
 .. code-block:: shell

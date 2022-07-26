@@ -11,6 +11,12 @@ The purpose of the `concat <../api/cli.html#tofspec-concat>`_ command is to take
 and concatenate them together. To use, you must provide either a list of files or a wildcard argument 
 that will glob all of the files together. FILES is the only required argument.
 
+.. raw:: html
+
+    <embed>
+        <hr>
+    </embed>
+
 Below is an example of a wildcard argument that will grab all files in the directory that begin with 
 **data** and are **.csv**'s. The concatenated output is saved to **path/output.csv**.
 
