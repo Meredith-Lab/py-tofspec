@@ -41,6 +41,8 @@ Overview of Commands
     load
     integrate-peaks
     label
+    concat
+    merge
 
 
 .. raw:: html
