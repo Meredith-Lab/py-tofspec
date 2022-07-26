@@ -34,7 +34,7 @@ From the raw format discussed on the `load <load.html>`_ guide, to a table that 
      - #
 
 The `integrate-peaks <../api/cli.html#tofspec-integrate-peaks>`_ command requires that the user specifies
-a peak list with the ``-c, --config`` argument. Beyond that, their are some optional arguements to describe
+a peak list with the ``-c, --config`` argument. Beyond that, their are some optional arguments to describe
 your input and customize your output. Pass ``-ts, --tscol`` with the name of your timestamp column if there
 is one in your input file. Pass ``-i, --ignore`` with the names of any metadata columns that you want to be
 passed from input to output. And choose whether you want your compound columns to be denoted by molecular 
@@ -54,9 +54,9 @@ denoted by molecular formula.
 
 .. code-block:: shell
 
-   $ tofspec integrate-peaks -o integrated_data.csv -ts Time -c my_peak_list.yml raw_data.csv
+   $ tofspec integrate-peaks -o integrated_data.csv -ts Time -c my_peak_list.yml -col=mf raw_data.csv
 
 .. important::
 
-   The purpose of the ``-col`` argument is not just stylistic. It plays a role in the ultimate `label <label.html>`_ing 
+   The purpose of the ``-col`` argument is not just stylistic. It plays a role in the ultimate `label <label.html>`_-ing 
    of data which is discussed in the next command.

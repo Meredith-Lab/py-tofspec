@@ -40,6 +40,7 @@ Overview of Commands
     config
     load
     integrate-peaks
+    label
 
 
 .. raw:: html

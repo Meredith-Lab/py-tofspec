@@ -17,11 +17,6 @@ def label_command(file, output, **kwargs):
     ignore = kwargs.pop('ignore', None)
     columns = kwargs.pop('columns', 'smiles')
 
-    config = kwargs.pop('config', 'tofspec/config/peak-list.yml')
-    peak_list = Path(config)
-    if peak_list.suffix not in (".yml", ".yaml"):
-        raise InvalidFileExtension("Invalid YAML file extension")
-
     # make sure the extension is either a csv or feather format
     output = Path(output)
     if output.suffix not in (".csv", ".feather"):
@@ -31,7 +26,7 @@ def label_command(file, output, **kwargs):
 
     df = safe_load(file)
 
-    label_df = group_time_series_df(df, config, lookup_table='tofspec/db/database.feather', columns=columns)
+    label_df = group_time_series_df(df, lookup_table='tofspec/db/database.feather', columns=columns)
 
     if tscol is not None:
         label_df[tscol] = pd.to_datetime(df[tscol])

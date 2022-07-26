@@ -179,7 +179,7 @@ def time_series_df_from_yaml(tof_data, mass_axis, **kwargs):
     return time_series_df
 
 
-def group_time_series_df(time_series_df, peak_list, **kwargs):
+def group_time_series_df(time_series_df, **kwargs):
     """
     Based on the groups listed in the config/voc-db.yml file,
     sum the time series dataframe to have those groups as columns.
@@ -212,9 +212,6 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
     else: 
         raise Exception("Only `mf` and `smiles` are accepted inputs for columns")
 
-    #load peak list
-    mf, smiles, min, max = peak_list_from_dict(read_yaml(peak_list))
-
     #load functional group lookup table
     fx_df = pd.read_feather(lookup_table)
     group_list = list(fx_df.columns)
@@ -223,8 +220,10 @@ def group_time_series_df(time_series_df, peak_list, **kwargs):
 
     #isolate only the columns which are in time_series_df
     if columns == 'mf':
+        mf = time_series_df.columns.to_numpy()
         subset_df = fx_df.loc[fx_df[columns].isin(mf)]
     else:
+        smiles = time_series_df.columns.to_numpy()
         subset_df = fx_df.loc[fx_df[columns].isin(smiles)]
 
     #get all of the compounds in each group

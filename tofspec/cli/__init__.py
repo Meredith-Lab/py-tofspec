@@ -88,7 +88,6 @@ def integrate_peaks(file, output, **kwargs):
 
 @click.command("label", short_help="sum compounds counts/concentrations by substructure")
 @click.argument("file", nargs=1, type=click.Path())
-@click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
 @click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
 @click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
 @click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of FILE")
