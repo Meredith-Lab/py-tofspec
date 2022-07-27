@@ -88,5 +88,5 @@ class TestClass(unittest.TestCase):
         self.assertIsInstance(fx_df, pd.DataFrame)
 
     def test_label(self):
-        grouped_df = tofspec.group_time_series_df(tofspec.time_series_df_from_yaml(self.tof_data, self.mass_axis, peak_list="tofspec/config/peak-list.yml"), "tofspec/config/peak-list.yml", lookup_table="tofspec/db/database.feather")
+        grouped_df = tofspec.group_time_series_df(tofspec.time_series_df_from_yaml(self.tof_data, self.mass_axis, peak_list="tofspec/config/peak-list.yml"), lookup_table="tofspec/db/database.feather")
         self.assertIsInstance(grouped_df, pd.DataFrame)

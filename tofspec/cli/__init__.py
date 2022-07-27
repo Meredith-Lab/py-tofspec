@@ -42,8 +42,8 @@ def merge(files, tscol, output, verbose, **kwargs):
 @click.argument("file", nargs=1, type=click.Path())
 @click.option("-s", "--smiles", is_flag=True, default=False, help="Does FILE have a smiles column?")
 @click.option("-ion", "--ion", is_flag=True, default=False, help="Does FILE have an ion column instead of a mf column?")
-@click.option("-n", "--name", default=None, help="name for the peak list", type=str)
-@click.option("-a", "--author", default=None, help="author of the peak list", type=str)
+@click.option("-n", "--name", default=None, help="Name for the peak list", type=str)
+@click.option("-a", "--author", default=None, help="Author of the peak list", type=str)
 @click.option("-o", "--output", default="output.yaml", help="The filepath where you would like to save the peak list", type=str)
 def config(file, output, **kwargs):
     """Use FILE to construct a peak list configuration .yaml file that will be used to integrate peaks
@@ -62,7 +62,7 @@ def config(file, output, **kwargs):
 @click.option("-m", "--metadata", is_flag=True, default=False, help="Does the file include metadata?")
 @click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
 def load(file, output, **kwargs):
-    """Parse FILE and save relevant data to OUTPUT.
+    """Parse mass spec FILE and save relevant data to OUTPUT.
     Read TOF data matrix from FILE. The structure of FILE is determined by the 
     optional --instrument and --format arguments. Currently, only 'vocus' and 'h5' are accepted.
     """
@@ -74,9 +74,9 @@ def load(file, output, **kwargs):
 @click.command("integrate-peaks", short_help="integrate ion peaks in raw mass spec data")
 @click.argument("file", nargs=1, type=click.Path())
 @click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
-@click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
-@click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
-@click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of FILE")
+@click.option("-ts", "--tscol", help="Column in FILE which contains timestamps")
+@click.option("-i", "--ignore", help="Names of metadata column(s) which should be ignored in the integration and passed to OUTPUT untouched")
+@click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="Choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of OUTPUT")
 @click.option("-o", "--output", default="output.csv", help="The filepath where you would like to save the file", type=str)
 def integrate_peaks(file, output, **kwargs):
     """Convert FILE, a matrix of raw PTR-TOF-MS data (TOF bins X timestamps) to a time series of
@@ -88,7 +88,6 @@ def integrate_peaks(file, output, **kwargs):
 
 @click.command("label", short_help="sum compounds counts/concentrations by substructure")
 @click.argument("file", nargs=1, type=click.Path())
-@click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
 @click.option("-ts", "--tscol", help="column in FILE which contains timestamps")
 @click.option("-i", "--ignore", help="names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT")
 @click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of FILE")
