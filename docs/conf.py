@@ -45,8 +45,6 @@ extensions = [
     'sphinx_click.ext',
     'sphinx.ext.intersphinx',
     "sphinx_copybutton",
-    'recommonmark',
-    "sphinx_rtd_theme"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
