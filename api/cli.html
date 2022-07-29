@@ -1,0 +1,563 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Notes" href="../notes/index.html" /><link rel="prev" title="API Reference" href="index.html" />
+
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
+        <title>tofspec CLI Documentation - py-tofspec</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">py-tofspec</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/tofspec_logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">py-tofspec</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../usage/user_guide.html">User Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage/config.html"><code class="code docutils literal notranslate"><span class="pre">config</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/load.html"><code class="code docutils literal notranslate"><span class="pre">load</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/integrate-peaks.html"><code class="code docutils literal notranslate"><span class="pre">integrate-peaks</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/label.html"><code class="code docutils literal notranslate"><span class="pre">label</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/concat.html"><code class="code docutils literal notranslate"><span class="pre">concat</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/merge.html"><code class="code docutils literal notranslate"><span class="pre">merge</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contribution</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#"><code class="code docutils literal notranslate"><span class="pre">tofspec</span></code> CLI Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../notes/index.html">Notes</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notes/isomers.html">Compound Identifiers and Isomers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes/substructures.html">Substructure Database</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="tofspec-cli-documentation">
+<h1><code class="code docutils literal notranslate"><span class="pre">tofspec</span></code> CLI Documentation<a class="headerlink" href="#tofspec-cli-documentation" title="Permalink to this headline">#</a></h1>
+<section id="tofspec">
+<h2>tofspec<a class="headerlink" href="#tofspec" title="Permalink to this headline">#</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tofspec <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-version">
+<span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-version" title="Permalink to this definition">#</a></dt>
+<dd><p>Show the version and exit.</p>
+</dd></dl>
+
+<section id="tofspec-concat">
+<h3>concat<a class="headerlink" href="#tofspec-concat" title="Permalink to this headline">#</a></h3>
+<p>Concatenate FILES together and save to OUTPUT.
+FILES is the collection or list of files that you are concatenating together. They
+can be provided as a list or by using a wildcard and providing the path with wildcard.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tofspec concat <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>FILES<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-concat-o">
+<span id="cmdoption-tofspec-concat-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-concat-o" title="Permalink to this definition">#</a></dt>
+<dd><p>The filepath where you would like to save the file</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-concat-arg-FILES">
+<span id="cmdoption-tofspec-concat-arg-files"></span><span class="sig-name descname"><span class="pre">FILES</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-concat-arg-FILES" title="Permalink to this definition">#</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="tofspec-config">
+<h3>config<a class="headerlink" href="#tofspec-config" title="Permalink to this headline">#</a></h3>
+<p>Use FILE to construct a peak list configuration .yaml file that will be used to integrate peaks
+and label / group data.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tofspec config <span class="o">[</span>OPTIONS<span class="o">]</span> FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-config-s">
+<span id="cmdoption-tofspec-config-smiles"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--smiles</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-config-s" title="Permalink to this definition">#</a></dt>
+<dd><p>Does FILE have a smiles column?</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-config-ion">
+<span id="cmdoption-tofspec-config-ion"></span><span class="sig-name descname"><span class="pre">-ion</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--ion</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-config-ion" title="Permalink to this definition">#</a></dt>
+<dd><p>Does FILE have an ion column instead of a mf column?</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-config-n">
+<span id="cmdoption-tofspec-config-name"></span><span class="sig-name descname"><span class="pre">-n</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;name&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-config-n" title="Permalink to this definition">#</a></dt>
+<dd><p>Name for the peak list</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-config-a">
+<span id="cmdoption-tofspec-config-author"></span><span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--author</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;author&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-config-a" title="Permalink to this definition">#</a></dt>
+<dd><p>Author of the peak list</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-config-o">
+<span id="cmdoption-tofspec-config-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-config-o" title="Permalink to this definition">#</a></dt>
+<dd><p>The filepath where you would like to save the peak list</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-config-arg-FILE">
+<span id="cmdoption-tofspec-config-arg-file"></span><span class="sig-name descname"><span class="pre">FILE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-config-arg-FILE" title="Permalink to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="tofspec-integrate-peaks">
+<h3>integrate-peaks<a class="headerlink" href="#tofspec-integrate-peaks" title="Permalink to this headline">#</a></h3>
+<p>Convert FILE, a matrix of raw PTR-TOF-MS data (TOF bins X timestamps) to a time series of
+integrated ion counts/concentrations for ions specified in the peak list (CONFIG).</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tofspec integrate-peaks <span class="o">[</span>OPTIONS<span class="o">]</span> FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-integrate-peaks-c">
+<span id="cmdoption-tofspec-integrate-peaks-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-integrate-peaks-c" title="Permalink to this definition">#</a></dt>
+<dd><p>The peak list .yml file that guides the integration process</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-integrate-peaks-ts">
+<span id="cmdoption-tofspec-integrate-peaks-tscol"></span><span class="sig-name descname"><span class="pre">-ts</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--tscol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tscol&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-integrate-peaks-ts" title="Permalink to this definition">#</a></dt>
+<dd><p>Column in FILE which contains timestamps</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-integrate-peaks-i">
+<span id="cmdoption-tofspec-integrate-peaks-ignore"></span><span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--ignore</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ignore&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-integrate-peaks-i" title="Permalink to this definition">#</a></dt>
+<dd><p>Names of metadata column(s) which should be ignored in the integration and passed to OUTPUT untouched</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-integrate-peaks-col">
+<span id="cmdoption-tofspec-integrate-peaks-columns"></span><span class="sig-name descname"><span class="pre">-col</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--columns</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;columns&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-integrate-peaks-col" title="Permalink to this definition">#</a></dt>
+<dd><p>Choose either molecular formula (<cite>mf</cite>) or SMILES string (<cite>smiles</cite>) as the column names of OUTPUT</p>
+<dl class="field-list simple">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p>smiles | mf</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-integrate-peaks-o">
+<span id="cmdoption-tofspec-integrate-peaks-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-integrate-peaks-o" title="Permalink to this definition">#</a></dt>
+<dd><p>The filepath where you would like to save the file</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-integrate-peaks-arg-FILE">
+<span id="cmdoption-tofspec-integrate-peaks-arg-file"></span><span class="sig-name descname"><span class="pre">FILE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-integrate-peaks-arg-FILE" title="Permalink to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="tofspec-label">
+<h3>label<a class="headerlink" href="#tofspec-label" title="Permalink to this headline">#</a></h3>
+<p>Convert FILE, a matrix of compound counts/concentrations, to a time series of integrated
+substructure/functional group concentrations. For more info on how to choose different substructures…</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tofspec label <span class="o">[</span>OPTIONS<span class="o">]</span> FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-label-ts">
+<span id="cmdoption-tofspec-label-tscol"></span><span class="sig-name descname"><span class="pre">-ts</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--tscol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tscol&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-label-ts" title="Permalink to this definition">#</a></dt>
+<dd><p>column in FILE which contains timestamps</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-label-i">
+<span id="cmdoption-tofspec-label-ignore"></span><span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--ignore</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ignore&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-label-i" title="Permalink to this definition">#</a></dt>
+<dd><p>names of metadata column(s) which should not be included in the integration but should be passed to OUTPUT</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-label-col">
+<span id="cmdoption-tofspec-label-columns"></span><span class="sig-name descname"><span class="pre">-col</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--columns</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;columns&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-label-col" title="Permalink to this definition">#</a></dt>
+<dd><p>choose either molecular formula (<cite>mf</cite>) or SMILES string (<cite>smiles</cite>) as the column names of FILE</p>
+<dl class="field-list simple">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p>smiles | mf</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-label-o">
+<span id="cmdoption-tofspec-label-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-label-o" title="Permalink to this definition">#</a></dt>
+<dd><p>The filepath where you would like to save the file</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-label-arg-FILE">
+<span id="cmdoption-tofspec-label-arg-file"></span><span class="sig-name descname"><span class="pre">FILE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-label-arg-FILE" title="Permalink to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="tofspec-load">
+<h3>load<a class="headerlink" href="#tofspec-load" title="Permalink to this headline">#</a></h3>
+<p>Parse mass spec FILE and save relevant data to OUTPUT.
+Read TOF data matrix from FILE. The structure of FILE is determined by the
+optional –instrument and –format arguments. Currently, only ‘vocus’ and ‘h5’ are accepted.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tofspec load <span class="o">[</span>OPTIONS<span class="o">]</span> FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-load-i">
+<span id="cmdoption-tofspec-load-instrument"></span><span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--instrument</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;instrument&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-load-i" title="Permalink to this definition">#</a></dt>
+<dd><p>The instrument that FILE comes from</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-load-f">
+<span id="cmdoption-tofspec-load-format"></span><span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-load-f" title="Permalink to this definition">#</a></dt>
+<dd><p>The format/file extension of FILE</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-load-m">
+<span id="cmdoption-tofspec-load-metadata"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--metadata</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-load-m" title="Permalink to this definition">#</a></dt>
+<dd><p>Does the file include metadata?</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-load-o">
+<span id="cmdoption-tofspec-load-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-load-o" title="Permalink to this definition">#</a></dt>
+<dd><p>The filepath where you would like to save the file</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-load-arg-FILE">
+<span id="cmdoption-tofspec-load-arg-file"></span><span class="sig-name descname"><span class="pre">FILE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-load-arg-FILE" title="Permalink to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="tofspec-merge">
+<h3>merge<a class="headerlink" href="#tofspec-merge" title="Permalink to this headline">#</a></h3>
+<p>Merge FILES together and save to OUTPUT.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tofspec merge <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>FILES<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-merge-ts">
+<span id="cmdoption-tofspec-merge-tscol"></span><span class="sig-name descname"><span class="pre">-ts</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--tscol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tscol&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-merge-ts" title="Permalink to this definition">#</a></dt>
+<dd><p>The column by which to join the files</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-merge-o">
+<span id="cmdoption-tofspec-merge-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-tofspec-merge-o" title="Permalink to this definition">#</a></dt>
+<dd><p>The filepath where you would like to save the file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-merge-v">
+<span id="cmdoption-tofspec-merge-verbose"></span><span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-merge-v" title="Permalink to this definition">#</a></dt>
+<dd><p>Enable verbose mode (debugging)</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tofspec-merge-arg-FILES">
+<span id="cmdoption-tofspec-merge-arg-files"></span><span class="sig-name descname"><span class="pre">FILES</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tofspec-merge-arg-FILES" title="Permalink to this definition">#</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../notes/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Notes</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">API Reference</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Joe Palmo
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="code docutils literal notranslate"><span class="pre">tofspec</span></code> CLI Documentation</a><ul>
+<li><a class="reference internal" href="#tofspec">tofspec</a><ul>
+<li><a class="reference internal" href="#tofspec-concat">concat</a></li>
+<li><a class="reference internal" href="#tofspec-config">config</a></li>
+<li><a class="reference internal" href="#tofspec-integrate-peaks">integrate-peaks</a></li>
+<li><a class="reference internal" href="#tofspec-label">label</a></li>
+<li><a class="reference internal" href="#tofspec-load">load</a></li>
+<li><a class="reference internal" href="#tofspec-merge">merge</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    </body>
+</html>
