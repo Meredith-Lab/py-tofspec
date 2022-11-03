@@ -57,7 +57,7 @@ def get_tof_data(f, t, n):
     timesteps (typically seconds) that the experiment was running
     n = number of mass bins that the mass spec is equipped to observe
     """
-    tof_data = np.array(f['FullSpectra']['TofData'])
+    tof_data = np.array(f['FullSpectra']['TofData'], dtype=np.uint16)
     tof_data = tof_data.reshape(t, n)
     return tof_data
 
@@ -74,7 +74,7 @@ def get_metadata(f):
 
     metadata = np.array(f['TPS2']['TwData'])
     try:
-        metadata_array = np.array(metadata[:, 87])
+        metadata_array = np.array(metadata[:, 87], dtype=np.uint16)
         return np.repeat(metadata_array, buftimes.shape[1])
     except:
         metadata_array = metadata[:,:,85].reshape(-1)
