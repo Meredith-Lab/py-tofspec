@@ -1,5 +1,5 @@
 name: build & release
-on: workflow_dispatch
+on: 
   create:
     tags:
       - '*'
