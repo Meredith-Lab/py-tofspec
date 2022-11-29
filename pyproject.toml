@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "py-tofspec"
-version = "0.1.0"
+version = "0.1.255"
 description = ""
 authors = ["Joe Palmo <jpalmo21@amherst.edu>"]
-include = ["*.yml"]
 packages = [
     { include="tofspec", from="." }
 ]
+include = [{path = "tofspec/config/peak-list.yml", format = ["sdist", "wheel"]}, {path = "tofspec/db", format = ["sdist", "wheel"]}]
 
 [tool.poetry.dependencies]
 python = "^3.8"

@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import rich_click as click
+from os import path
 
 from ...models import *
 from ...utils import safe_load
@@ -15,7 +16,9 @@ def integrate_peaks_command(file, output, **kwargs):
     ignore = kwargs.pop('ignore', None)
     columns = kwargs.pop('columns', 'smiles')
 
-    config = kwargs.pop('config', 'tofspec/config/peak-list.yml')
+    default_config_path = path.join(path.dirname(__file__), '../../config/peak-list.yml')
+    # config = kwargs.pop('config', 'tofspec/config/peak-list.yml')
+    config = kwargs.pop('config', default_config_path)
     peak_list = Path(config)
     if peak_list.suffix not in (".yml", ".yaml"):
         raise InvalidFileExtension("Invalid YAML file extension")

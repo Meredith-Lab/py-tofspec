@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import rich_click as click
+from os import path
 
 from tofspec.models import group_time_series_df
 
@@ -26,7 +27,7 @@ def label_command(file, output, **kwargs):
 
     df = safe_load(file)
 
-    label_df = group_time_series_df(df, lookup_table='tofspec/db/database.feather', columns=columns)
+    label_df = group_time_series_df(df, lookup_table=path.join(path.dirname(__file__), '../../db/database.feather'), columns=columns)
 
     if tscol is not None:
         label_df[tscol] = pd.to_datetime(df[tscol])

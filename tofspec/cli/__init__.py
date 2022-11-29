@@ -1,5 +1,6 @@
 import rich_click as click
 import pkg_resources
+from os import path
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -73,7 +74,7 @@ def load(file, output, **kwargs):
 #add integrate peaks command
 @click.command("integrate-peaks", short_help="integrate ion peaks in raw mass spec data")
 @click.argument("file", nargs=1, type=click.Path())
-@click.option("-c", "--config", default="tofspec/config/peak-list.yml", help="The peak list .yml file that guides the integration process", type=click.Path())
+@click.option("-c", "--config", default=path.join(path.dirname(__file__), '../config/peak-list.yml'), help="The peak list .yml file that guides the integration process", type=click.Path())
 @click.option("-ts", "--tscol", help="Column in FILE which contains timestamps")
 @click.option("-i", "--ignore", help="Names of metadata column(s) which should be ignored in the integration and passed to OUTPUT untouched")
 @click.option("-col", "--columns", type=click.Choice(['smiles', 'mf'], case_sensitive=False),  default='smiles', help="Choose either molecular formula (`mf`) or SMILES string (`smiles`) as the column names of OUTPUT")
