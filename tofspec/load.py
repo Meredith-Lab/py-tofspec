@@ -36,6 +36,7 @@ def get_times(f):
     start_time = f['AcquisitionLog']['Log']['timestring'][0]
     start_time = datetime.strptime(start_time.decode('UTF-8'), "%Y-%m-%dT%H:%M:%S%z")
     start_time = start_time.astimezone(pytz.utc)
+    start_time = start_time.replace(tzinfo=None)
 
     # times of observation are recorded as second offsets from start time
     buftimes = np.array(f['TimingData']['BufTimes'])
