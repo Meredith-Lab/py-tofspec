@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import h5py
+import pytz
 from datetime import datetime, timedelta
 
 ## methods for wrangling PTR-TOF-MS Vocus hdf5 file data and compiling into some properties
@@ -33,7 +34,8 @@ def get_times(f):
     """
     # get experiment start time from log file and transform string to datetime
     start_time = f['AcquisitionLog']['Log']['timestring'][0]
-    start_time = datetime.strptime(start_time.decode('UTF-8'), "%Y-%m-%dT%H:%M:%S+00:00")
+    start_time = datetime.strptime(start_time.decode('UTF-8'), "%Y-%m-%dT%H:%M:%S%z")
+    start_time = start_time.astimezone(pytz.utc)
 
     # times of observation are recorded as second offsets from start time
     buftimes = np.array(f['TimingData']['BufTimes'])
